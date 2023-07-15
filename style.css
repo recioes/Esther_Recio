@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+}
+
+/*Página inteira */
+body {
+  background-image: url(./gif2.gif);
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+/* Card principal com os links */
+main {
+  background-color: #c4b09d;
+  width: 500px;
+  height: 800px;
+
+  /* Adicionando as propriedades flex para centralizar conteúdo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Adicionando um pouco de padding */
+  padding: 20px;
+}
+
+img {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%; /* Deixa a imagem circular */
+  border: 10px solid aliceblue;
+}
+
+.nome {
+  font-family: "Cardo", serif;
+  font-weight: 400;
+  letter-spacing: 5px;
+  font-size: 35px;
+  margin-bottom: 4px;
+}
+
+h2.cargo {
+  font-family: "Mistrully", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+  color: aliceblue;
+  font-size: 35px;
+  margin-top: 4px;
+}
+
+/* Nav bar */
+nav ul {
+  font-family: "Cardo", serif;
+  color: black;
+  list-style: none;
+  font-size: 20px;
+  font-weight: 400;
+}
+nav ul li {
+  list-style: none;
+}
+
+/* modificação dos links */
+a {
+  text-decoration: none !important;
+  list-style: none; /* tira o formato de tópicos */
+}
+
+/* Estilização da nav bar */
+.linkedin,
+.github,
+.lattes {
+  display: inline-block; /* Permite a aplicação de padding e outras estilizações */
+  border: none; /* Remove a borda padrão */
+  color: black; /* Define a cor do texto */
+  text-align: center; /* Centraliza o texto */
+  text-decoration: none; /* Remove o sublinhado do link */
+  font-size: 20px; /* Define o tamanho da fonte */
+  cursor: pointer; /* Muda o cursor para um ponteiro quando você passa o mouse sobre o botão */
+  padding: 10px 24px; /* Adiciona um pouco de espaço ao redor do texto */
+  background-color: aliceblue; /* Define a cor de fundo do botão */
+  transition: background-color 0.3s ease; /* Faz uma transição suave para a cor de fundo quando você passa o mouse sobre o botão */
+  width: 200px; /* Define a largura do botão */
+  height: 60px; /* Define a altura do botão */
+  line-height: 60px; /* Centraliza verticalmente o texto no botão */
+  margin: 5px 10px 10px 10px; /* Adiciona um espaço ao redor dos botões */
+  letter-spacing: 3px;
+}
+
+.linkedin:hover,
+.github:hover,
+.lattes:hover {
+  background-color: #800080; /* Muda a cor de fundo do botão quando você passa o mouse sobre ele */
+}
+
+.criador {
+  text-align: center;
+}
+
+.criador a {
+  color: white;
+  font-family: "Cardo", serif;
+  font-weight: 400;
+  margin-left: 20px;
+}
+
+.atribuicao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+/* Responsividade */
+@media screen and (max-width: 640px) {
+  body {
+    background-image: url(./gif2.gif);
+    background-repeat: no-repeat;
+    background-size: cover; /* Ajusta o background para cobrir toda a área */
+    background-position: center; /* Centraliza o background */
+  }
+  img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .nome,
+  h2.cargo {
+    font-size: 20px;
+  }
+
+  main {
+    width: 80%; /* Ajuste como necessário */
+    height: auto; /* Permite que o conteúdo defina a altura */
+  }
+}
+
+.redes {
+  margin-right: 20px;
+}
+.linkedin,
+.github,
+.lattes {
+  width: auto; /* Ajuste como necessário */
+  height: 40px; /* Ajuste como necessário */
+  line-height: 40px; /* Ajuste como necessário */
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
