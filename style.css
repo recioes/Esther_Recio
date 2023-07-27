@@ -138,7 +138,7 @@ a {
   }
 
   main {
-    width: 80%; /* Ajuste como necessário */
+    width: 80%;
     height: auto; /* Permite que o conteúdo defina a altura */
   }
 }
@@ -149,9 +149,9 @@ a {
 .linkedin,
 .github,
 .lattes {
-  width: auto; /* Ajuste como necessário */
-  height: 40px; /* Ajuste como necessário */
-  line-height: 40px; /* Ajuste como necessário */
+  width: auto;
+  height: 40px;
+  line-height: 40px;
   align-items: center;
   display: flex;
   justify-content: center;
