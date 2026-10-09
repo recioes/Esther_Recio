@@ -1,0 +1,63 @@
+---
+// A ordem importa: tokens.css declara a ordem das @layer e deve vir primeiro.
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '@fontsource-variable/inter/wght.css';
+import EarthBackdrop from '../components/EarthBackdrop.astro';
+import { dictionaries, pagePath } from '../i18n';
+import type { Dictionary } from '../i18n/types';
+import { joinBase } from '../lib/base-path';
+import { CONTENT_SECURITY_POLICY } from '../lib/csp';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const absolute = (path: string): string => new URL(joinBase(base, path), Astro.site).href;
+const alternates = Object.values(dictionaries);
+const canonicalUrl = absolute(pagePath(dict));
+const previewImage = absolute('media/earth-poster.jpg');
+---
+
+<!doctype html>
+<html lang={dict.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* Só em produção: em dev o Vite injeta estilos/scripts inline e o HMR usa WebSocket. */
+      import.meta.env.PROD && (
+        <meta http-equiv="Content-Security-Policy" content={CONTENT_SECURITY_POLICY} />
+      )
+    }
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#07060b" />
+    <title>{dict.title}</title>
+    <meta name="description" content={dict.description} />
+    <link rel="icon" type="image/svg+xml" href={joinBase(base, 'favicon.svg')} />
+    <link rel="canonical" href={canonicalUrl} />
+    {
+      alternates.map((alternate) => (
+        <link rel="alternate" hreflang={alternate.htmlLang} href={absolute(pagePath(alternate))} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={absolute('')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={dict.title} />
+    <meta property="og:description" content={dict.description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={dict.htmlLang.replace('-', '_')} />
+    <meta property="og:image" content={previewImage} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <EarthBackdrop />
+    <slot />
+    <script>
+      import '../scripts/interactions';
+    </script>
+  </body>
+</html>

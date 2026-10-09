@@ -1,0 +1,31 @@
+{
+  "name": "esther-recio-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/verify-dist.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "verify": "npm run lint && npm run check && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "astro": "^7.3.8",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@biomejs/biome": "^2.5.15",
+    "@types/three": "^0.186.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3"
+  }
+}

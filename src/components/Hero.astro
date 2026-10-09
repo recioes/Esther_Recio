@@ -1,0 +1,19 @@
+---
+import '../styles/components/hero.css';
+
+interface Props {
+  readonly name: string;
+  readonly initials: string;
+  readonly role: string;
+}
+
+const { name, initials, role } = Astro.props;
+---
+
+<header class="hero reveal" data-reveal="1">
+  <div class="hero__monogram" aria-hidden="true">
+    <span>{initials}</span>
+  </div>
+  <h1 class="hero__name">{name}</h1>
+  <p class="hero__role">{role}</p>
+</header>

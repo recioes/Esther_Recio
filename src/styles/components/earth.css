@@ -1,0 +1,62 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .earth {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: var(--color-bg);
+    pointer-events: none;
+  }
+
+  /* Poster: o render do globo no mesmo enquadramento do canvas (diâmetro = 85% do menor lado). */
+  .earth__stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vmin;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    transition: opacity 1.2s var(--ease-out);
+    -webkit-mask-image: radial-gradient(circle closest-side, #000 94%, transparent 100%);
+    mask-image: radial-gradient(circle closest-side, #000 94%, transparent 100%);
+  }
+
+  .earth__poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .earth__canvas {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out);
+  }
+
+  .earth__canvas canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .globe-ready .earth__canvas {
+    opacity: 1;
+  }
+
+  .globe-ready .earth__stage {
+    opacity: 0;
+  }
+
+  /* Aurora roxa/rosa + escurecimento para garantir contraste do texto. */
+  .earth__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 0%, rgb(139 92 246 / 0.34), transparent 55%),
+      radial-gradient(ellipse at 90% 100%, rgb(236 72 153 / 0.26), transparent 55%),
+      linear-gradient(180deg, rgb(7 6 11 / 0.42), rgb(7 6 11 / 0.74));
+  }
+}

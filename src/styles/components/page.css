@@ -1,0 +1,102 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .page {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-7);
+    min-height: 100dvh;
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .page__nav {
+    width: min(100%, 30rem);
+  }
+
+  .page__links {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  /* Entrada escalonada: a ordem vem de data-reveal (ou da posição na lista). */
+  .reveal {
+    animation: rise var(--dur-slow) var(--ease-out) both;
+    animation-delay: calc(var(--reveal-step) * var(--reveal-order, 0));
+  }
+
+  .reveal[data-reveal="0"] {
+    --reveal-order: 0;
+  }
+
+  .reveal[data-reveal="1"] {
+    --reveal-order: 1;
+  }
+
+  .page__links > li:nth-child(1) {
+    --reveal-order: 2;
+  }
+
+  .page__links > li:nth-child(2) {
+    --reveal-order: 3;
+  }
+
+  .page__links > li:nth-child(3) {
+    --reveal-order: 4;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer components {
+  /* O globo recebe o arrasto nas áreas vazias; só o que é clicável captura o ponteiro. */
+  .page {
+    pointer-events: none;
+  }
+
+  .page__nav,
+  .language-switch {
+    pointer-events: auto;
+  }
+
+  /* Dica de interação: só aparece quando o globo 3D está ativo e some no primeiro arrasto. */
+  .globe-hint {
+    position: fixed;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    z-index: 1;
+    display: none;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out);
+  }
+
+  .globe-ready .globe-hint {
+    display: block;
+    animation: rise var(--dur-slow) var(--ease-out) 1.2s backwards;
+  }
+
+  .globe-dragged .globe-hint {
+    opacity: 0;
+  }
+}

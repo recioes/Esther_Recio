@@ -1,0 +1,22 @@
+---
+import type { InferGetStaticPropsType } from 'astro';
+import Profile from '../components/Profile.astro';
+import Base from '../layouts/Base.astro';
+import { dictionaries } from '../i18n';
+
+// Uma rota por dicionário: "/" (pt-BR) e "/en/". Novo idioma = novo dicionário.
+export function getStaticPaths() {
+  return Object.values(dictionaries).map((dict) => ({
+    params: { locale: dict.slug === '' ? undefined : dict.slug },
+    props: { dict },
+  }));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { dict } = Astro.props;
+---
+
+<Base dict={dict}>
+  <Profile dict={dict} />
+</Base>

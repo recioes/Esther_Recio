@@ -1,0 +1,31 @@
+---
+import '../styles/components/language-switch.css';
+import { dictionaries, pagePath } from '../i18n';
+import type { Dictionary } from '../i18n/types';
+import { joinBase } from '../lib/base-path';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const options = Object.values(dictionaries);
+---
+
+<nav class="language-switch reveal" data-reveal="0" aria-label={dict.languageSwitchLabel}>
+  {
+    options.map((option) => (
+      <a
+        class="language-switch__option"
+        href={joinBase(base, pagePath(option))}
+        lang={option.htmlLang}
+        hreflang={option.htmlLang}
+        aria-label={`${option.shortName} — ${dict.languageNames[option.locale]}`}
+        aria-current={option.locale === dict.locale ? 'page' : undefined}
+      >
+        {option.shortName}
+      </a>
+    ))
+  }
+</nav>

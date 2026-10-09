@@ -1,43 +1,69 @@
-<h1 align="center"> Página de redicionamento para outras redes </h1>
+# Esther Recio — página de links
 
-<p align="center">
-Neste projeto, criei uma página de redirecionamento personalizada para outras redes sociais, como LinkedIn, GitHub e meu currículo Lattes. A página foi desenvolvida utilizando as linguagens HTML e CSS.
-  
-<p align="center">
-  <a href="#-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-aprendizado">Aprendizado</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
- 
-</p>
+Página pessoal com meus perfis profissionais (LinkedIn em PT/EN, GitHub e Lattes), sobre a Terra girando em dia e noite. Online em https://recioes.github.io/Esther_Recio/
 
+## Stack
 
-<br>
+- **Astro** (HTML estático, 0 KB de JS de framework) + **TypeScript** estrito
+- **CSS nativo** com tokens e `@layer` (sem Tailwind e sem bibliotecas de animação)
+- **Inter** variável, hospedada localmente
+- Vitest (testes), Biome (lint e formatação), GitHub Actions (CI e deploy)
 
+As decisões e o raciocínio estão em [`docs/adr/0001-modernizacao-pagina-links.md`](docs/adr/0001-modernizacao-pagina-links.md).
 
-<p align="center">
-  <img alt="design" src= "https://user-images.githubusercontent.com/118849369/253722065-8b0b9aae-720f-4d79-b6aa-8fdd1e6f8d1f.png">
-</p>
+## Comandos
 
-## 🚀 Tecnologias
+| Comando | O que faz |
+|---|---|
+| `npm ci` | Instala as dependências do lockfile |
+| `npm run dev` | Servidor local (sem CSP, pois o Vite injeta código inline) |
+| `npm run build` | Gera `dist/` e roda `scripts/verify-dist.mjs` |
+| `npm run preview` | Serve o `dist/` como em produção (com CSP) |
+| `npm test` | Testes unitários |
+| `npm run lint` / `npm run format` | Biome |
+| `npm run check` | Tipos (`astro check`) |
+| `npm run verify` | Tudo acima, em sequência |
 
-Esse projeto foi desenvolvido com as seguintes tecnologias:
+Requer Node 22 ou superior.
 
-- HTML
-- CSS
-- Canva para o design do layout
-- Git e Github
+## Estrutura
 
-## 💻 Projeto
+```
+src/
+├── data/        # links e perfil (fonte única, tipada)
+├── i18n/        # dicionários pt-BR e en
+├── lib/         # funções puras e testadas (validação de links, CSP, ponteiro)
+├── components/  # Hero, LinkCard, LanguageSwitch, EarthBackdrop, Profile
+├── layouts/     # Base (head, CSP, meta tags)
+├── pages/       # [...locale].astro gera "/" (pt-BR) e "/en/"
+├── scripts/     # interações opcionais (spotlight, tilt, globo 3D)
+└── styles/      # tokens.css, base.css e components/*.css
+scripts/verify-dist.mjs   # guarda de segurança pós-build
+tests/unit/               # Vitest
+skills/                   # skills para agentes de IA (design, segurança, arquitetura, ADR)
+```
 
-Ao acessar a página, os visitantes têm a opção de escolher qual rede social desejam visitar, clicando no respectivo link. Essa abordagem permite que eu compartilhe minhas informações e perfis de maneira organizada e personalizada, proporcionando uma experiência mais agradável aos visitantes.
+## Como editar
 
-- [Visite o projeto online]([https://recioes.github.io/relatorio_ciberseguranca/](https://recioes.github.io/Esther_Recio/))
-## 📝 Aprendizado
+- **Novo link:** adicione em `src/data/links.ts` e o texto em `src/i18n/*.ts`. O build falha se o host não estiver na allowlist (`AllowedHost` em `src/data/types.ts`) ou se o protocolo não for `https`.
+- **Novo idioma:** crie um dicionário em `src/i18n/`, registre-o em `src/i18n/index.ts` e inclua o código em `Locale`.
+- **Cores e espaçamentos:** somente em `src/styles/tokens.css`.
 
-A principal motivação para criar essa página de redirecionamento personalizada foi o descontentamento com as opções gratuitas disponíveis na web. Eu queria ter um controle total sobre o design e a experiência do usuário ao acessar minhas redes sociais.
+## Deploy
 
-Durante o desenvolvimento deste projeto, pude aprender e aprimorar meus conhecimentos em HTML e CSS. Foi uma ótima oportunidade para praticar a criação de páginas web estáticas e explorar diferentes recursos dessas linguagens. Além disso, a experiência me permitiu aprofundar minha compreensão sobre a estrutura e o estilo de uma página da web.
+O workflow `deploy.yml` publica no GitHub Pages a cada push na `main`. Em **Settings → Pages**, a fonte precisa estar em **GitHub Actions**.
 
-Ao criar essa página personalizada, consegui refletir minha identidade profissional e transmitir uma imagem mais coesa aos visitantes. Acredito que ter uma presença online consistente e bem projetada é essencial para estabelecer conexões profissionais e atrair oportunidades relevantes.
+## Globo 3D
 
-Estou satisfeita com o resultado final deste projeto e espero que você também aprecie a experiência ao acessar minhas redes sociais através desta página de redirecionamento personalizada.
+A Terra é um globo three.js (shader próprio: dia/noite com crepúsculo rosa, nuvens, atmosfera roxa, estrelas). Arraste para girar (com inércia); ele volta devagar para a vista do Brasil.
+
+- O three.js (~132 KB gzip) é um chunk **lazy**: só baixa se houver WebGL, depois da primeira pintura. Sem WebGL, com erro ou antes de carregar, aparece o poster estático (`public/media/earth-poster.*`).
+- Texturas em `public/textures/` (2k e 4k em WebP; 4k só em telas grandes/hidpi e sem `saveData`).
+- `prefers-reduced-motion`: globo parado (ainda dá para arrastar, sem inércia).
+- **Créditos das texturas:** vieram dos exemplos do repositório `vasturiano/three-globe` (MIT). A origem original das imagens (provavelmente NASA Blue/Black Marble) não foi confirmada: confirme a licença antes de divulgar, ou troque pelos mapas oficiais da NASA (domínio público).
+
+## Acessibilidade e segurança
+
+- Respeita `prefers-reduced-motion` (globo parado, sem tilt nem animações) e usa hover só com mouse.
+- Foco por teclado visível; a página funciona sem JavaScript.
+- Detalhes em [`SECURITY.md`](SECURITY.md).

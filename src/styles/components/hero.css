@@ -1,0 +1,97 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
+  }
+
+  .hero__monogram {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    width: 7rem;
+    aspect-ratio: 1;
+    margin-bottom: var(--space-3);
+    border-radius: 50%;
+    background: var(--color-surface);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  /* Anel em gradiente que gira devagar. */
+  .hero__monogram::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 0deg,
+      var(--color-purple-500),
+      var(--color-pink-500),
+      var(--color-purple-700),
+      var(--color-purple-500)
+    );
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 3px),
+      #000 calc(100% - 2px)
+    );
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    animation: spin 14s linear infinite;
+  }
+
+  /* Glow suave atrás do monograma. */
+  .hero__monogram::after {
+    content: "";
+    position: absolute;
+    inset: -14px;
+    z-index: -2;
+    border-radius: inherit;
+    background: var(--gradient-brand);
+    filter: blur(32px);
+    opacity: 0.4;
+  }
+
+  .hero__monogram span {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero__name {
+    background: var(--gradient-title);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: clamp(2.5rem, 9vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+  }
+
+  .hero__role {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+}

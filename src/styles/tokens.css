@@ -1,0 +1,48 @@
+/* Deve ser o primeiro CSS carregado: define a ordem das camadas. */
+@layer reset, tokens, base, components, utilities;
+
+@layer tokens {
+  :root {
+    /* Cores */
+    --color-bg: #07060b;
+    --color-surface: rgb(18 14 32 / 0.6);
+    --color-border: rgb(255 255 255 / 0.12);
+    --color-text: #f5f5f7;
+    --color-text-muted: #a1a1aa;
+    --color-purple-500: #8b5cf6;
+    --color-purple-700: #6d28d9;
+    --color-pink-300: #f9a8d4;
+    --color-pink-500: #ec4899;
+    --color-pink-600: #db2777;
+
+    /* Gradientes */
+    --gradient-brand: linear-gradient(135deg, var(--color-purple-500), var(--color-pink-500));
+    --gradient-action: linear-gradient(135deg, var(--color-purple-700), var(--color-pink-600));
+    --gradient-title: linear-gradient(180deg, #ffffff 35%, #c4b5fd);
+
+    /* Tipografia */
+    --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    /* Espaçamento */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 2.5rem;
+    --space-8: 3rem;
+
+    /* Forma */
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --radius-pill: 999px;
+
+    /* Movimento */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 150ms;
+    --dur-med: 300ms;
+    --dur-slow: 700ms;
+    --reveal-step: 80ms;
+  }
+}

@@ -1,0 +1,41 @@
+---
+import '../styles/components/page.css';
+import { PROFILE_LINKS } from '../data/links';
+import { PROFILE } from '../data/profile';
+import type { Dictionary } from '../i18n/types';
+import { assertValidLinks } from '../lib/links';
+import Hero from './Hero.astro';
+import LanguageSwitch from './LanguageSwitch.astro';
+import LinkCard from './LinkCard.astro';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+
+// Falha o build se algum destino sair da allowlist (https + host esperado).
+assertValidLinks(PROFILE_LINKS);
+---
+
+<main class="page">
+  <LanguageSwitch dict={dict} />
+  <Hero name={PROFILE.name} initials={PROFILE.initials} role={dict.role} />
+  <nav class="page__nav" aria-label={dict.linksLabel}>
+    <ul class="page__links">
+      {
+        PROFILE_LINKS.map((link) => (
+          <li class="reveal">
+            <LinkCard
+              link={link}
+              copy={dict.links[link.id]}
+              languageNames={dict.languageNames}
+              newTabHint={dict.newTabHint}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <p class="globe-hint" aria-hidden="true">{dict.globeHint}</p>
+</main>
