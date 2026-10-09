@@ -1,0 +1,19 @@
+---
+import '../styles/components/earth.css';
+import { joinBase } from '../lib/base-path';
+
+const base = import.meta.env.BASE_URL;
+const poster = joinBase(base, 'media/earth-poster.webp');
+---
+
+<!--
+  Sem JS/WebGL: aparece só o poster (render do próprio globo). Com WebGL, o script monta o
+  globo 3D em [data-globe-root] e o poster some. Decorativo: fora da árvore de acessibilidade.
+-->
+<div class="earth" aria-hidden="true">
+  <div class="earth__stage">
+    <img class="earth__poster" src={poster} alt="" width="1024" height="1024" decoding="async" />
+  </div>
+  <div class="earth__canvas" data-globe-root></div>
+  <div class="earth__veil"></div>
+</div>

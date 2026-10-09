@@ -1,0 +1,32 @@
+{
+  "files": {
+    "includes": [
+      "src/**/*.ts",
+      "src/**/*.css",
+      "tests/**/*.ts",
+      "scripts/**/*.mjs",
+      "astro.config.mjs",
+      "tsconfig.json",
+      "biome.json"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": { "preset": "recommended" }
+  },
+  "overrides": [
+    {
+      "includes": ["src/styles/base.css"],
+      "linter": { "rules": { "complexity": { "noImportantStyles": "off" } } }
+    }
+  ],
+  "javascript": {
+    "formatter": { "quoteStyle": "single" }
+  }
+}

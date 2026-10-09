@@ -1,0 +1,44 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .language-switch {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    display: flex;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+  }
+
+  .language-switch__option {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition:
+      background var(--dur-med) var(--ease-out),
+      color var(--dur-med) var(--ease-out);
+  }
+
+  .language-switch__option[aria-current="page"] {
+    background: var(--gradient-action);
+    color: #fff;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .language-switch__option:not([aria-current="page"]):hover {
+      background: rgb(255 255 255 / 0.08);
+      color: var(--color-text);
+    }
+  }
+}

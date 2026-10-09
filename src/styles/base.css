@@ -1,0 +1,107 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body,
+  h1,
+  p,
+  ul {
+    margin: 0;
+  }
+
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  img,
+  video,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Vive na camada mais antiga: !important vence qualquer regra de camadas posteriores. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-pink-300);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-purple-700);
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@layer base {
+  a {
+    cursor: pointer;
+  }
+
+  html.globe-ready {
+    cursor: grab;
+  }
+
+  html.is-dragging {
+    cursor: grabbing;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Permite rolar na vertical e girar o globo na horizontal. */
+  html.globe-ready body {
+    touch-action: pan-y pinch-zoom;
+  }
+}
