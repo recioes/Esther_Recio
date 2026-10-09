@@ -40,8 +40,17 @@ function externalSubresources(html) {
   ];
   return tags.filter((tag) => {
     const url = attr(tag, 'src') ?? attr(tag, 'href') ?? '';
-    return /^(https?:)?\/\//i.test(url) && !url.startsWith(OWN_ORIGIN);
+    return /^(https?:)?\/\//i.test(url) && !isOwnOrigin(url);
   });
+}
+
+// Compara a origem já parseada: um prefixo de string aceitaria "https://recioes.github.io.evil.com".
+function isOwnOrigin(url) {
+  try {
+    return new URL(url, OWN_ORIGIN).origin === OWN_ORIGIN;
+  } catch {
+    return false;
+  }
 }
 
 function unsafeBlankTargets(html) {
