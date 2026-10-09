@@ -8,21 +8,19 @@ export const PROFILE_LINKS: readonly ProfileLink[] = [
     id: 'linkedin',
     host: 'www.linkedin.com',
     icon: 'briefcase',
-    targets: [
-      { locale: 'pt-BR', href: 'https://www.linkedin.com/in/estherrecio/?locale=pt-BR' },
-      { locale: 'en', href: 'https://www.linkedin.com/in/estherrecio/?locale=en-US' },
-    ],
+    // Sem ?locale: o app do LinkedIn ignora o parâmetro e abre no idioma do aparelho.
+    href: 'https://www.linkedin.com/in/estherrecio/',
   },
   {
     id: 'github',
     host: 'github.com',
     icon: 'code',
-    targets: [{ href: GITHUB_URL }],
+    href: GITHUB_URL,
   },
   {
     id: 'lattes',
     host: 'lattes.cnpq.br',
     icon: 'book',
-    targets: [{ href: 'https://lattes.cnpq.br/0571310526367628' }],
+    href: 'https://lattes.cnpq.br/0571310526367628',
   },
 ];

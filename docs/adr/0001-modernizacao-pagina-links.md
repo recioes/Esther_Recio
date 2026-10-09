@@ -92,14 +92,11 @@ src/
 scripts/verify-dist.mjs · tests/unit/ · docs/adr/ · skills/
 ```
 
-**LinkedIn em um card só:** o destino com mais de um idioma vira um card com dois botões (Português / English), cada um um link real. Evita elementos interativos aninhados e funciona sem JS.
+**LinkedIn com um único link** (`https://www.linkedin.com/in/estherrecio/`). A primeira versão tinha dois botões (Português / English) com `?locale=`, mas o app do LinkedIn no celular intercepta o link e ignora o parâmetro, abrindo sempre no idioma do aparelho. Cada card tem exatamente um `href`:
 
 ```ts
 // src/data/links.ts (trecho)
-targets: [
-  { locale: 'pt-BR', href: 'https://www.linkedin.com/in/estherrecio/' },
-  { locale: 'en', href: 'https://www.linkedin.com/in/estherrecio/?locale=en-US' },
-],
+href: 'https://www.linkedin.com/in/estherrecio/',
 ```
 
 `assertValidLinks` roda no build: todo `href` precisa ser `https:` e ter exatamente o host declarado (allowlist: `www.linkedin.com`, `github.com`, `lattes.cnpq.br`). Domínios que só *contêm* o host permitido são rejeitados.
@@ -206,6 +203,7 @@ Para isso funcionar: `build.inlineStylesheets: 'never'` e `assetsInlineLimit: 0`
 | Projeto Astro, TS estrito, Biome, Vitest (19 testes) | Feito |
 | Dados, i18n pt-BR/en, validação de links, CSP | Feito |
 | Hero com monograma, LinkCard (spotlight/tilt), troca de idioma, globo 3D | Feito |
+| Estrelas e foguete ao passar o mouse/tocar no nome (respeita movimento reduzido) | Feito |
 | Texturas 2k/4k, poster renderizado do globo | Feito |
 | CI, deploy, CodeQL, Dependabot (Actions fixadas por SHA) | Escrito; **ainda não executado** (precisa de push) |
 | `verify-dist.mjs` | Feito |
@@ -224,13 +222,12 @@ Para isso funcionar: `build.inlineStylesheets: 'never'` e `assetsInlineLimit: 0`
 ## 7. Decisões da dona e questões em aberto
 
 **Decididas:**
-- LinkedIn PT/EN fica em **um card com alternância de idioma**.
-- URL do perfil em inglês: `https://www.linkedin.com/in/estherrecio/?locale=en-US` (informada pela dona).
+- LinkedIn com **um único link padrão**, sem `?locale` (2026-10: o seletor PT/EN foi removido porque o app ignora o parâmetro). A versão em outro idioma fica a cargo do recurso "perfil em outro idioma" do próprio LinkedIn, que escolhe a versão pelo idioma de quem visita.
 - **Foto removida**; monograma no lugar.
 - Implementar com Astro.
 
 **Em aberto:**
-1. Resolvido: o botão "Português" usa `?locale=pt-BR`. Confirmar no navegador antes do deploy.
+1. ~~Botões PT/EN do LinkedIn~~ Removidos: o app do LinkedIn ignora `?locale`.
 2. ~~Globo 3D?~~ Resolvido: globo 3D implementado.
 3. Domínio próprio? Permitiria headers via CDN, `security.txt` e URL mais curta.
 4. ~~Resolução da animação~~ Resolvido: texturas 2k/4k. Falta confirmar a licença/origem delas.

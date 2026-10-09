@@ -9,16 +9,9 @@ export type LinkId = 'linkedin' | 'github' | 'lattes';
 
 export type IconName = 'briefcase' | 'code' | 'book' | 'arrow';
 
-export interface LinkTarget {
-  /** Preenchido quando o mesmo perfil existe em mais de um idioma. */
-  readonly locale?: Locale;
-  readonly href: HttpsUrl;
-}
-
 export interface ProfileLink {
   readonly id: LinkId;
   readonly host: AllowedHost;
   readonly icon: IconName;
-  /** Um alvo = card inteiro clicável; dois ou mais = card com seletor de idioma. */
-  readonly targets: readonly [LinkTarget, ...LinkTarget[]];
+  readonly href: HttpsUrl;
 }
