@@ -1,69 +1,28 @@
 ---
 import '../styles/components/link-card.css';
-import type { Locale, ProfileLink } from '../data/types';
+import type { ProfileLink } from '../data/types';
 import type { LinkCopy } from '../i18n/types';
 import Icon from './Icon.astro';
 
 interface Props {
   readonly link: ProfileLink;
   readonly copy: LinkCopy;
-  readonly languageNames: Readonly<Record<Locale, string>>;
   readonly newTabHint: string;
 }
 
-const { link, copy, languageNames, newTabHint } = Astro.props;
-const [firstTarget, ...otherTargets] = link.targets;
-const isSingleTarget = otherTargets.length === 0;
-
-const pillLabel = (locale: Locale | undefined): string =>
-  locale ? languageNames[locale] : copy.label;
+const { link, copy, newTabHint } = Astro.props;
 ---
 
-{
-  isSingleTarget ? (
-    <a
-      class="link-card link-card--single"
-      data-spotlight
-      href={firstTarget.href}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <span class="link-card__icon">
-        <Icon name={link.icon} />
-      </span>
-      <span class="link-card__body">
-        <span class="link-card__label">{copy.label}</span>
-        <span class="link-card__description">{copy.description}</span>
-      </span>
-      <span class="link-card__arrow">
-        <Icon name="arrow" />
-      </span>
-      <span class="sr-only">({newTabHint})</span>
-    </a>
-  ) : (
-    <div class="link-card link-card--multi" data-spotlight>
-      <span class="link-card__icon">
-        <Icon name={link.icon} />
-      </span>
-      <span class="link-card__body">
-        <span class="link-card__label">{copy.label}</span>
-        <span class="link-card__description">{copy.description}</span>
-      </span>
-      <span class="link-card__pills">
-        {link.targets.map((target) => (
-          <a
-            class="link-pill"
-            href={target.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            lang={target.locale}
-            aria-label={`${copy.label} — ${pillLabel(target.locale)} (${newTabHint})`}
-          >
-            {pillLabel(target.locale)}
-            <Icon name="arrow" />
-          </a>
-        ))}
-      </span>
-    </div>
-  )
-}
+<a class="link-card" data-spotlight href={link.href} target="_blank" rel="noopener noreferrer">
+  <span class="link-card__icon">
+    <Icon name={link.icon} />
+  </span>
+  <span class="link-card__body">
+    <span class="link-card__label">{copy.label}</span>
+    <span class="link-card__description">{copy.description}</span>
+  </span>
+  <span class="link-card__arrow">
+    <Icon name="arrow" />
+  </span>
+  <span class="sr-only">({newTabHint})</span>
+</a>

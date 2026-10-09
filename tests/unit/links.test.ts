@@ -8,7 +8,7 @@ function makeLink(href: string, host: AllowedHost = 'github.com'): ProfileLink {
     id: 'github',
     host,
     icon: 'code',
-    targets: [{ href: href as ProfileLink['targets'][0]['href'] }],
+    href: href as ProfileLink['href'],
   };
 }
 
@@ -40,8 +40,8 @@ describe('validateLinks', () => {
 });
 
 describe('PROFILE_LINKS', () => {
-  it('mantém o LinkedIn em PT e EN no mesmo card', () => {
+  it('aponta o LinkedIn para a URL padrão, sem ?locale (o app ignora o parâmetro)', () => {
     const linkedin = PROFILE_LINKS.find((link) => link.id === 'linkedin');
-    expect(linkedin?.targets.map((target) => target.locale)).toEqual(['pt-BR', 'en']);
+    expect(linkedin?.href).toBe('https://www.linkedin.com/in/estherrecio/');
   });
 });

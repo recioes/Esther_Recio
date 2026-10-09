@@ -1,4 +1,5 @@
 import { pointerOffset, tiltAngles } from '../lib/pointer';
+import { enhanceName } from './name-sparkles';
 
 /**
  * Melhorias progressivas: a página funciona sem este arquivo (fica o poster estático).
@@ -79,6 +80,7 @@ function whenIdle(task: () => void): void {
 }
 
 enhanceCards();
+enhanceName(prefersReducedMotion);
 whenIdle(() => {
   void startGlobe();
 });

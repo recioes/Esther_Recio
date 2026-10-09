@@ -1,0 +1,134 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .hero__name-wrap {
+    position: relative;
+    display: inline-block;
+    /* .page desliga o ponteiro (para o arraste do globo); o nome precisa recebê-lo para o efeito. */
+    pointer-events: auto;
+  }
+
+  .hero__name {
+    transition: filter var(--dur-slow) var(--ease-out);
+  }
+
+  /* Brilho no nome enquanto as estrelas aparecem. */
+  .hero__name-wrap:hover .hero__name {
+    filter: drop-shadow(0 0 22px rgb(196 181 253 / 0.55));
+  }
+
+  /* Área um pouco maior que o nome, onde as estrelas e o foguete aparecem. */
+  .sparkle-layer {
+    position: absolute;
+    inset: -35% -8%;
+    pointer-events: none;
+  }
+
+  .sparkle {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: calc(var(--size) * var(--sparkle-scale, 1));
+    height: calc(var(--size) * var(--sparkle-scale, 1));
+    fill: currentColor;
+    filter: drop-shadow(0 0 6px currentColor);
+    animation: sparkle-burst var(--dur, 900ms) var(--ease-out) var(--delay, 0ms) both;
+  }
+
+  .sparkle[data-tone="0"] {
+    color: #ffffff;
+  }
+
+  .sparkle[data-tone="1"] {
+    color: var(--color-pink-300);
+  }
+
+  .sparkle[data-tone="2"] {
+    color: #c4b5fd;
+  }
+
+  .sparkle[data-tone="3"] {
+    color: var(--color-purple-500);
+  }
+
+  .sparkle--trail {
+    animation-name: sparkle-twinkle;
+    animation-duration: 1000ms;
+  }
+
+  .rocket {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+    line-height: 1;
+    filter: drop-shadow(0 0 10px rgb(236 72 153 / 0.6));
+    animation: rocket-fly var(--dur, 1800ms) cubic-bezier(0.45, 0, 0.25, 1) both;
+  }
+
+  @keyframes sparkle-burst {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    }
+
+    35% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(calc(var(--rot, 0deg) * 0.4));
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) scale(0.2)
+        rotate(var(--rot, 0deg));
+    }
+  }
+
+  @keyframes sparkle-twinkle {
+    0%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+    }
+
+    40% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(45deg);
+    }
+  }
+
+  @keyframes rocket-fly {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--heading)) scale(0.6);
+    }
+
+    12% {
+      opacity: 1;
+    }
+
+    85% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(calc(-50% + var(--fly-x)), calc(-50% + var(--fly-y)))
+        rotate(var(--heading)) scale(1.05);
+    }
+  }
+
+  /* No celular o nome é menor: estrelas proporcionais para não cobrir as letras. */
+  @media (max-width: 30rem) {
+    .sparkle-layer {
+      --sparkle-scale: 0.6;
+    }
+  }
+
+  /* Sem deslocamento: as estrelas só acendem e apagam no lugar (o script não cria o foguete). */
+  @media (prefers-reduced-motion: reduce) {
+    .sparkle {
+      animation-name: sparkle-twinkle;
+    }
+  }
+}

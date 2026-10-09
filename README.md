@@ -1,6 +1,6 @@
 # Esther Recio — página de links
 
-Página pessoal com meus perfis profissionais (LinkedIn em PT/EN, GitHub e Lattes), sobre a Terra girando em dia e noite. Online em https://recioes.github.io/Esther_Recio/
+Página pessoal com meus perfis profissionais (LinkedIn, GitHub e Lattes), sobre a Terra girando em dia e noite. Online em https://recioes.github.io/Esther_Recio/
 
 ## Stack
 

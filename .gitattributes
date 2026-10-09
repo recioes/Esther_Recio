@@ -1,0 +1,2 @@
+# LF em todos os textos (o Biome exige LF; evita CRLF de core.autocrlf no Windows).
+* text=auto eol=lf
