@@ -2,6 +2,7 @@
 import '../styles/components/timeline.css';
 import { TIMELINE } from '../data/timeline';
 import type { Dictionary } from '../i18n/types';
+import { formatPeriod } from '../lib/period';
 
 interface Props {
   readonly dict: Dictionary;
@@ -15,6 +16,10 @@ const copy = dict.timeline;
   <header class="timeline__header">
     <h2 class="timeline__title" id="timeline-title">{copy.title}</h2>
     <p class="timeline__intro">{copy.intro}</p>
+    <p class="timeline__legend" aria-hidden="true">
+      <span class="timeline__legend-item" data-kind="work">{copy.kindLabels.work}</span>
+      <span class="timeline__legend-item" data-kind="education">{copy.kindLabels.education}</span>
+    </p>
   </header>
   <ol class="timeline__list">
     {
@@ -31,13 +36,23 @@ const copy = dict.timeline;
             <span class="timeline__dot" aria-hidden="true" />
             <article class="timeline__card">
               <p class="timeline__period">
-                {item.period}
+                <span class="sr-only">{copy.kindLabels[entry.kind]}: </span>
+                {formatPeriod(entry.start, entry.end, dict.htmlLang, copy.present)}
                 {entry.current && <span class="timeline__now">{copy.currentLabel}</span>}
               </p>
               <h3 class="timeline__role">{item.title}</h3>
               <p class="timeline__org">{item.org}</p>
               {item.highlight && <p class="timeline__highlight">{item.highlight}</p>}
               <p class="timeline__summary">{item.summary}</p>
+              {
+                item.points && (
+                  <ul class="bullets">
+                    {item.points.map((point) => (
+                      <li>{point}</li>
+                    ))}
+                  </ul>
+                )
+              }
               {
                 entry.tags && (
                   <ul class="timeline__tags">

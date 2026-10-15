@@ -1,4 +1,11 @@
-import type { LinkId, Locale, TimelineId } from '../data/types';
+import type {
+  ActivityId,
+  LanguageId,
+  LanguageLevel,
+  LinkId,
+  Locale,
+  TimelineId,
+} from '../data/types';
 import type { DayPeriod } from '../lib/greeting';
 import type { MarkerId } from '../lib/markers';
 import type { ThemeId } from '../lib/themes';
@@ -8,21 +15,70 @@ export interface LinkCopy {
   readonly description: string;
 }
 
+/** Resumo profissional (id "sobre"). */
+export interface AboutCopy {
+  readonly title: string;
+  /** Frase de posicionamento, em destaque. */
+  readonly lead: string;
+  readonly paragraphs: readonly string[];
+}
+
+export interface LanguageCopy {
+  readonly name: string;
+  readonly detail: string;
+}
+
+export interface LanguagesCopy {
+  readonly title: string;
+  readonly intro: string;
+  readonly levels: Readonly<Record<LanguageLevel, string>>;
+  readonly items: Readonly<Record<LanguageId, LanguageCopy>>;
+  /** Diferencia a vivência multicultural da experiência profissional. */
+  readonly note: string;
+}
+
 export interface TimelineCopy {
-  readonly period: string;
   readonly title: string;
   readonly org: string;
   readonly summary: string;
   /** Destaque curto exibido como selo (opcional). */
   readonly highlight?: string;
+  /** Contribuições concretas, em lista (opcional). */
+  readonly points?: readonly string[];
 }
 
 export interface TimelineSectionCopy {
   readonly title: string;
   readonly intro: string;
   readonly cue: string;
+  readonly present: string;
   readonly currentLabel: string;
+  readonly kindLabels: { readonly work: string; readonly education: string };
   readonly items: Readonly<Record<TimelineId, TimelineCopy>>;
+}
+
+export interface ActivityCopy {
+  readonly title: string;
+  readonly org: string;
+  readonly summary: string;
+  readonly points: readonly string[];
+}
+
+export interface AcademicCopy {
+  readonly title: string;
+  readonly intro: string;
+  readonly publicationLabel: string;
+  readonly publication: {
+    /** Tradução livre do título, para quem não lê português. Vazio em pt-BR. */
+    readonly titleGloss: string;
+    readonly glossLabel: string;
+    readonly eventLabel: string;
+    readonly authorsLabel: string;
+    readonly role: string;
+    readonly summary: string;
+  };
+  readonly activitiesLabel: string;
+  readonly activities: Readonly<Record<ActivityId, ActivityCopy>>;
 }
 
 export interface MarkerCopy {
@@ -35,7 +91,6 @@ export interface EasterCopy {
   readonly turbo: string;
   readonly rocketRain: string;
   readonly moonOn: string;
-  readonly moonOff: string;
   readonly nameGlow: string;
   readonly wish: string;
   readonly shootingStarLabel: string;
@@ -73,7 +128,10 @@ export interface Dictionary {
   readonly newTabHint: string;
   readonly globeHint: string;
   readonly links: Readonly<Record<LinkId, LinkCopy>>;
+  readonly about: AboutCopy;
+  readonly languages: LanguagesCopy;
   readonly timeline: TimelineSectionCopy;
+  readonly academic: AcademicCopy;
   readonly easter: EasterCopy;
   readonly notFound: NotFoundCopy;
 }

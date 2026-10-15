@@ -2,7 +2,7 @@ import { PROFILE_LINKS } from '../data/links';
 import { DEFAULT_LOCALE, dictionaries } from '../i18n';
 import type { Dictionary } from '../i18n/types';
 import { tapBoostMultiplier } from '../lib/boost';
-import { dayPeriod, formatClock } from '../lib/greeting';
+import { type DayPeriod, dayPeriod, formatClock, shouldGreet } from '../lib/greeting';
 import {
   createSequenceMatcher,
   KONAMI_SEQUENCE,
@@ -15,14 +15,7 @@ import { isThemeId, nextTheme, THEME_GLOBE, type ThemeId } from '../lib/themes';
 import { printConsoleSignature } from './console-signature';
 import { mountConstellation } from './constellation-ui';
 import { createCursorTrail } from './cursor-trail';
-import {
-  glowName,
-  rocketRain,
-  spawnShootingStar,
-  starBurstAt,
-  toggleMoon,
-  turboRocket,
-} from './fx';
+import { glowName, rocketRain, showMoon, spawnShootingStar, starBurstAt, turboRocket } from './fx';
 import type { GlobeHandle, MarkerUi } from './globe';
 import { createMarkerTooltip } from './globe-tooltip';
 import type { NameEffects } from './name-sparkles';
@@ -34,7 +27,8 @@ import { createToast } from './toast';
  *
  * - Konami (↑↑↓↓←→←→BA) ou segurar o nome: turbo no globo + foguete
  * - toques no globo: cada um gira mais rápido; no 10º o planeta fica "tonto"
- * - digitar: foguete/rocket (chuva), lua/moon (modo lunar), esther (nome brilha), estrela/wish
+ * - digitar: foguete/rocket/cohete (chuva), lua/moon/luna (lua por 12 s), esther (nome brilha),
+ *   estrela/estrella/wish/deseo (estrela cadente)
  * - 5 cliques no monograma: troca de tema
  * - constelação escondida no canto superior esquerdo
  * - estrela cadente rara (1 em 20 visitas)
@@ -47,11 +41,15 @@ type ActionId = 'turbo' | 'rain' | 'moon' | 'name' | 'wish';
 const WORDS: readonly (readonly [ActionId, string])[] = [
   ['rain', 'foguete'],
   ['rain', 'rocket'],
+  ['rain', 'cohete'],
   ['moon', 'lua'],
   ['moon', 'moon'],
+  ['moon', 'luna'],
   ['name', 'esther'],
   ['wish', 'estrela'],
+  ['wish', 'estrella'],
   ['wish', 'wish'],
+  ['wish', 'deseo'],
 ];
 
 const SEQUENCES: Readonly<Record<string, readonly string[]>> = {
@@ -69,8 +67,11 @@ const LONG_PRESS_MS = 900;
 const LONG_PRESS_SLOP_PX = 10;
 /** A tecla S só liga/desliga a poeira estelar se nada foi digitado no último segundo (não atrapalha as palavras). */
 const TRAIL_KEY_IDLE_MS = 1000;
+/** A lua some sozinha, como os outros efeitos. */
+const MOON_MS = 12_000;
 const GREETING_DELAY_MS = 2400;
-const GREETED_KEY = 'greeted';
+const GREETING_CHECK_MS = 30_000;
+const GREETED_KEY = 'greeted-period';
 
 export interface EasterEnvironment {
   readonly reducedMotion: boolean;
@@ -99,19 +100,20 @@ function isTypingTarget(target: EventTarget | null): boolean {
   );
 }
 
-function wasGreeted(): boolean {
+/** Último período do dia saudado nesta sessão da aba (sobrevive a recarregar e a trocar de idioma). */
+function readGreetedPeriod(): string | null {
   try {
-    return sessionStorage.getItem(GREETED_KEY) === '1';
+    return sessionStorage.getItem(GREETED_KEY);
   } catch {
-    return false;
+    return null;
   }
 }
 
-function markGreeted(): void {
+function writeGreetedPeriod(period: DayPeriod): void {
   try {
-    sessionStorage.setItem(GREETED_KEY, '1');
+    sessionStorage.setItem(GREETED_KEY, period);
   } catch {
-    // Armazenamento bloqueado: a saudação pode reaparecer, sem problema.
+    // Armazenamento bloqueado: o controle em memória (greetedInPage) evita repetir na página aberta.
   }
 }
 
@@ -140,7 +142,8 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
       if (!env.reducedMotion) rocketRain();
     },
     moon() {
-      toast.show(toggleMoon() ? copy.moonOn : copy.moonOff);
+      toast.show(copy.moonOn);
+      showMoon(MOON_MS);
     },
     name() {
       toast.show(copy.nameGlow);
@@ -230,17 +233,22 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
     window.setTimeout(actions.wish, shootingStarDelayMs());
   }
 
-  // Saudação pela hora local, uma vez por sessão.
-  if (!wasGreeted()) {
-    window.setTimeout(() => {
-      const now = new Date();
-      toast.show(
-        copy.greeting[dayPeriod(now.getHours())].replace('{time}', formatClock(now)),
-        4800,
-      );
-      markGreeted();
-    }, GREETING_DELAY_MS);
-  }
+  // Saudação pela hora local: uma vez por período do dia em cada sessão da aba. Não repete ao
+  // recarregar nem ao trocar de idioma; reaparece quando o período muda. Só conta como "vista"
+  // se a aba estava visível (em segundo plano o aviso passaria despercebido).
+  let greetedInPage: DayPeriod | undefined;
+  const greetIfDue = (): void => {
+    if (document.hidden) return;
+    const now = new Date();
+    const period = dayPeriod(now.getHours());
+    if (period === greetedInPage || !shouldGreet(readGreetedPeriod(), period)) return;
+    greetedInPage = period;
+    writeGreetedPeriod(period);
+    toast.show(copy.greeting[period].replace('{time}', formatClock(now)), 4800);
+  };
+  window.setTimeout(greetIfDue, GREETING_DELAY_MS);
+  window.setInterval(greetIfDue, GREETING_CHECK_MS);
+  document.addEventListener('visibilitychange', greetIfDue);
 
   const linkedin = PROFILE_LINKS.find((link) => link.id === 'linkedin');
   if (linkedin) printConsoleSignature(copy.consoleHello, copy.consoleCta, linkedin.href);

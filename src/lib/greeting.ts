@@ -13,3 +13,8 @@ export function formatClock(date: Date): string {
   const pad = (value: number): string => String(value).padStart(2, '0');
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
+
+/** Saúda se ainda não saudou neste período (`lastGreeted` vem do armazenamento da sessão). */
+export function shouldGreet(lastGreeted: string | null, current: DayPeriod): boolean {
+  return lastGreeted !== current;
+}

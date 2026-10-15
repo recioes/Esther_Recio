@@ -36,7 +36,6 @@ import {
 } from '../lib/globe-math';
 import { type MarkerId, pickNearest } from '../lib/markers';
 import { createRng, starPositions } from '../lib/stars';
-import { sunDirectionForDate } from '../lib/sun';
 import { createMarkerLayer } from './globe-markers';
 import {
   ATMOSPHERE_FRAGMENT,
@@ -68,9 +67,9 @@ export interface GlobeHandle {
   setPalette(glow: number, twilight: number): void;
 }
 
-// Vista inicial centrada no Brasil. O sol segue a hora real do visitante (ver lib/sun.ts).
+// Vista inicial centrada no Brasil; sol vindo da esquerda-frente (fixo, igual para todo visitante).
 const INITIAL_VIEW = { lat: -12, lon: -50 } as const;
-const SUN_REFRESH_MS = 30_000;
+const SUN_DIRECTION = new Vector3(-0.75, 0.38, 0.62).normalize();
 const HOVER_RADIUS_PX = 20;
 const TAP_RADIUS_PX = 32;
 const TAP_SLOP_PX = 6;
@@ -144,12 +143,6 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     loadTexture(loader, textureUrl('earth-clouds-2k.webp'), NoColorSpace, anisotropy),
   ]);
 
-  // Direção do Sol: fixa na superfície (referencial da textura) e girada junto com o globo.
-  const sunLocal = new Vector3(...sunDirectionForDate(new Date()));
-  const sunWorld = new Vector3();
-  const sunEuler = new Euler();
-  let sunUpdatedAt = 0;
-
   const scene = new Scene();
   const camera = new PerspectiveCamera(FOV_DEGREES, 1, 0.1, 200);
 
@@ -162,7 +155,7 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
       uniforms: {
         dayMap: { value: dayMap },
         nightMap: { value: nightMap },
-        sunDirection: { value: sunWorld },
+        sunDirection: { value: SUN_DIRECTION },
         twilightColor: { value: new Color(PINK) },
         rimColor: { value: new Color(LILAC) },
       },
@@ -175,7 +168,7 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
       fragmentShader: CLOUDS_FRAGMENT,
       transparent: true,
       depthWrite: false,
-      uniforms: { cloudMap: { value: cloudMap }, sunDirection: { value: sunWorld } },
+      uniforms: { cloudMap: { value: cloudMap }, sunDirection: { value: SUN_DIRECTION } },
     }),
   );
   globe.add(earth, clouds);
@@ -250,12 +243,6 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     globe.rotation.set(rotation.x, rotation.y, tilt);
     clouds.rotation.y = cloudDrift;
     stars.rotation.set(rotation.x * 0.04, rotation.y * 0.04, 0);
-
-    if (clock - sunUpdatedAt > SUN_REFRESH_MS) {
-      sunLocal.set(...sunDirectionForDate(new Date()));
-      sunUpdatedAt = clock;
-    }
-    sunWorld.copy(sunLocal).applyEuler(sunEuler.set(rotation.x, rotation.y, 0));
 
     markers.animate(clock);
     renderer.render(scene, camera);
