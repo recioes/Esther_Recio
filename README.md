@@ -1,6 +1,6 @@
 # Esther Recio — links page
 
-Personal page with my professional profiles (LinkedIn, GitHub and Lattes), my career journey, and a spinning Earth that follows the visitor's local time. Live at https://recioes.github.io/Esther_Recio/
+Personal page with my professional profiles (LinkedIn, GitHub and Lattes), my career journey, education, languages and academic activities, in Portuguese, English and Spanish, over a spinning Earth. Live at https://recioes.github.io/Esther_Recio/
 
 ## Stack
 
@@ -30,12 +30,12 @@ Requires Node 22 or later.
 
 ```
 src/
-├── data/        # links, profile and timeline (single typed source)
-├── i18n/        # pt-BR and en dictionaries (site copy)
-├── lib/         # pure, tested functions (link validation, CSP, pointer, sun, sequences...)
-├── components/  # Hero, LinkCard, LanguageSwitch, EarthBackdrop, Timeline, Profile
+├── data/        # links, profile, timeline and academic data (single typed source)
+├── i18n/        # pt-BR, en and es dictionaries (site copy)
+├── lib/         # pure, tested functions (link validation, CSP, pointer, periods, sequences...)
+├── components/  # Hero, LinkCard, LanguageSwitch, EarthBackdrop, About, Languages, Timeline, Academic, Profile
 ├── layouts/     # Base (head, CSP, meta tags, Open Graph)
-├── pages/       # [...locale].astro builds "/" (pt-BR) and "/en/"; 404.astro
+├── pages/       # [...locale].astro builds "/" (pt-BR), "/en/" and "/es/"; 404.astro
 ├── scripts/     # optional interactions (spotlight, tilt, 3D globe, easter eggs)
 └── styles/      # tokens.css, base.css and components/*.css
 scripts/verify-dist.mjs        # post-build security guard
@@ -47,7 +47,8 @@ skills/                        # skills for AI agents (design, security, archite
 ## How to edit
 
 - **New link:** add it to `src/data/links.ts` and its copy to `src/i18n/*.ts`. The build fails if the host is not in the allowlist (`AllowedHost` in `src/data/types.ts`) or the protocol is not `https`.
-- **New language:** create a dictionary in `src/i18n/`, register it in `src/i18n/index.ts` and add its code to `Locale`.
+- **New language:** create a dictionary in `src/i18n/` (it must implement the whole `Dictionary` type), register it in `src/i18n/index.ts` and add its code to `Locale`. The unit tests fail if any text, timeline item, activity or key number is missing or inconsistent across languages.
+- **Writing content:** do not invent facts. Dates live in `src/data/*.ts` and are formatted per language by `src/lib/period.ts`, so periods cannot drift between versions. Write each language natively, not as a literal translation.
 - **Colors and spacing:** only in `src/styles/tokens.css`.
 - **Git and docs conventions:** see [`skills/git-workflow/SKILL.md`](skills/git-workflow/SKILL.md). Branches are `type/topic-topic`, commits are `Type: verb object`, and PRs, README and docs are written in English.
 
@@ -59,18 +60,21 @@ The `deploy.yml` workflow publishes to GitHub Pages on every push to `main`. Und
 
 The Earth is a three.js globe with a custom shader: day and night with a pink twilight, clouds, a purple atmosphere and stars. Drag to spin it (with inertia); it slowly returns to the view over Brazil.
 
-- Day and night follow the visitor's **real local time** (`src/lib/sun.ts`): at night in Brazil the globe opens dark, with the city lights on.
+- The lighting is fixed (the same for every visitor, at any time of day).
 - Glowing, pulsing markers for **Brasília** and **Santander** (`src/lib/markers.ts`). Hover or tap to see the name.
 - three.js (~132 KB gzip) is a **lazy** chunk: it is only downloaded when WebGL is available, after the first paint. Without WebGL, on error, or before it loads, a static poster is shown (`public/media/earth-poster.*`).
 - Textures live in `public/textures/` (2k and 4k WebP; 4k only on large or hi-dpi screens without `saveData`).
 - `prefers-reduced-motion`: the globe stays still (dragging still works, without inertia).
 - **Texture credits:** they come from the examples of the `vasturiano/three-globe` repository (MIT). The original source of the images (probably NASA Blue/Black Marble) was not confirmed: confirm the license before promoting the page, or swap them for the official NASA maps (public domain).
 
-## Career timeline
+## Content sections
 
-- `src/data/timeline.ts` defines the order and the technologies; the copy (period, role, summary, highlight) lives in `timeline.items` of each dictionary in `src/i18n/`.
-- Items "light up" as you scroll (like cities on the night side of the globe). Without JavaScript they all show lit.
-- Content source: LinkedIn.
+All copy lives in `src/i18n/{pt-BR,en,es}.ts`; structured facts (dates, order, languages, authors) live in `src/data/`.
+
+- **About** and **Languages:** positioning, how the two degrees combine, and the multilingual background (native Portuguese and Spanish, fluent English). Lived international background is kept separate from professional experience.
+- **Journey** (`src/data/timeline.ts`): work and education in one timeline (circle = experience, diamond = education), with concrete contributions per item. Items "light up" on scroll; without JavaScript they all show lit.
+- **Academic activities** (`src/data/academic.ts`): the conference paper, the teaching assistantship and the organizing committee, so they are not duplicated in the education cards.
+- Content source: LinkedIn plus information provided by Esther. Anything not confirmed is left out.
 
 ## Share preview and 404
 
@@ -86,15 +90,15 @@ Everything is decorative, costs nothing to visitors who do not look for it, and 
 |---|---|
 | Konami code (↑↑↓↓←→←→ B A), or press and hold the name (mobile) | Turbo globe and a giant rocket |
 | Tap the globe repeatedly | Each tap spins it faster; on the 10th the planet gets "dizzy" |
-| Type `foguete` / `rocket` | Rocket rain |
-| Type `lua` / `moon` | Moon mode (toggles) |
+| Type `foguete` / `rocket` / `cohete` | Rocket rain |
+| Type `lua` / `moon` / `luna` | The moon appears for 12 s (typing again restarts the timer) |
 | Type `esther` | The name glows |
-| Type `estrela` / `wish` | A clickable shooting star (make a wish); it also shows up on its own in 1 of 20 visits |
+| Type `estrela` / `estrella` / `wish` / `deseo` | A clickable shooting star (make a wish); it also shows up on its own in 1 of 20 visits |
 | Click the "ER" monogram 5 times | Theme change: aurora → sunset → terminal |
 | Hidden constellation (top-left corner) | Connect the 5 stars in the right order to draw a five-pointed star |
 | Move the mouse | Stardust trail; the `S` key (after 1 s without typing) toggles it |
 | Open the browser console | A note with the LinkedIn link |
-| Greeting | A message based on the visitor's local time (once per session) |
+| Greeting | A message based on the visitor's local time, once per part of the day (dawn, morning, afternoon, evening) in each tab session: not on reload, but again when the part of the day changes. It waits until the tab is visible |
 
 ## Accessibility and security
 
