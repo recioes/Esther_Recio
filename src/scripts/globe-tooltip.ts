@@ -1,5 +1,5 @@
-import type { MarkerId } from '../lib/markers';
 import type { MarkerCopy } from '../i18n/types';
+import type { MarkerId } from '../lib/markers';
 import type { MarkerUi } from './globe';
 
 /** Rótulo flutuante dos pontos luminosos (Brasília, Santander). Decorativo: aria-hidden. */

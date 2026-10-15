@@ -79,7 +79,7 @@
 
   /* Trilho vertical: roxo no topo, rosa embaixo, esmaecendo no fim. */
   .timeline__list::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 1.5rem;
     bottom: 0.5rem;
@@ -120,21 +120,21 @@
   }
 
   .timeline__dot::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 3px;
     border-radius: inherit;
     background: var(--gradient-brand);
   }
 
-  .timeline__item[data-kind='education'] .timeline__dot {
+  .timeline__item[data-kind="education"] .timeline__dot {
     border-radius: 6px;
     rotate: 45deg;
   }
 
   /* Em andamento: anel que pulsa. */
   .timeline__item[data-current] .timeline__dot::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: -2px;
     border: 2px solid var(--color-pink-300);
@@ -215,7 +215,7 @@
   }
 
   .timeline__highlight::before {
-    content: '✦';
+    content: "✦";
     margin-right: var(--space-2);
     color: var(--color-pink-300);
   }

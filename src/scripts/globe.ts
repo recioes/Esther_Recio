@@ -36,6 +36,7 @@ import {
 } from '../lib/globe-math';
 import { type MarkerId, pickNearest } from '../lib/markers';
 import { createRng, starPositions } from '../lib/stars';
+import { createMarkerLayer } from './globe-markers';
 import {
   ATMOSPHERE_FRAGMENT,
   ATMOSPHERE_VERTEX,
@@ -43,7 +44,6 @@ import {
   EARTH_FRAGMENT,
   SURFACE_VERTEX,
 } from './globe-shaders';
-import { createMarkerLayer } from './globe-markers';
 
 /** Interface que mostra o rótulo de um ponto luminoso (implementada fora, em globe-tooltip.ts). */
 export interface MarkerUi {
