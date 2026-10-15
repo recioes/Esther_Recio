@@ -1,11 +1,14 @@
 import { pointerOffset, tiltAngles } from '../lib/pointer';
+import { startEasterEggs } from './easter-eggs';
 import { enhanceName } from './name-sparkles';
+import { observeTimeline } from './timeline-reveal';
 
 /**
  * Melhorias progressivas: a página funciona sem este arquivo (fica o poster estático).
  * - spotlight e tilt só em dispositivos com mouse (hover: hover, pointer: fine)
  * - tilt e rotação do globo respeitam prefers-reduced-motion
  * - o globo 3D (three.js) só é baixado se houver WebGL, depois da primeira pintura
+ * - easter eggs (ver easter-eggs.ts) e a linha do tempo que "acende" ao rolar
  */
 const MAX_TILT_DEGREES = 5;
 
@@ -58,13 +61,19 @@ function wantsSavedData(): boolean {
   return connection?.saveData === true;
 }
 
-async function startGlobe(): Promise<void> {
+async function startGlobe(easter: ReturnType<typeof startEasterEggs>): Promise<void> {
   const root = document.querySelector<HTMLElement>('[data-globe-root]');
   if (!root || !supportsWebGL()) return;
 
   try {
     const { mountGlobe } = await import('./globe');
-    await mountGlobe(root, { reducedMotion: prefersReducedMotion, saveData: wantsSavedData() });
+    const handle = await mountGlobe(root, {
+      reducedMotion: prefersReducedMotion,
+      saveData: wantsSavedData(),
+      onTap: easter.onGlobeTap,
+      markerUi: easter.markerUi,
+    });
+    easter.attachGlobe(handle);
     document.documentElement.classList.add('globe-ready');
   } catch {
     // Sem WebGL utilizável ou texturas indisponíveis: o poster estático permanece.
@@ -80,7 +89,13 @@ function whenIdle(task: () => void): void {
 }
 
 enhanceCards();
-enhanceName(prefersReducedMotion);
+observeTimeline();
+const nameEffects = enhanceName(prefersReducedMotion);
+const easter = startEasterEggs({
+  reducedMotion: prefersReducedMotion,
+  finePointer: hasFinePointer,
+  name: nameEffects,
+});
 whenIdle(() => {
-  void startGlobe();
+  void startGlobe(easter);
 });

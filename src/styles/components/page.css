@@ -100,3 +100,36 @@
     opacity: 0;
   }
 }
+
+@layer components {
+  /* Convite para rolar até a trajetória. Fica clicável mesmo com .page sem ponteiro. */
+  .page__cue {
+    --reveal-order: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    pointer-events: auto;
+    transition: color var(--dur-med) var(--ease-out);
+  }
+
+  .page__cue svg {
+    animation: cue-bounce 2.2s ease-in-out infinite;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .page__cue:hover {
+      color: var(--color-text);
+    }
+  }
+
+  @keyframes cue-bounce {
+    50% {
+      transform: translateY(4px);
+    }
+  }
+}

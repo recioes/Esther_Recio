@@ -1,0 +1,56 @@
+---
+import '../styles/components/timeline.css';
+import { TIMELINE } from '../data/timeline';
+import type { Dictionary } from '../i18n/types';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const copy = dict.timeline;
+---
+
+<section class="timeline" id="trajetoria" aria-labelledby="timeline-title">
+  <header class="timeline__header">
+    <h2 class="timeline__title" id="timeline-title">{copy.title}</h2>
+    <p class="timeline__intro">{copy.intro}</p>
+  </header>
+  <ol class="timeline__list">
+    {
+      TIMELINE.map((entry) => {
+        const item = copy.items[entry.id];
+        return (
+          <li
+            class="timeline__item"
+            data-kind={entry.kind}
+            data-current={entry.current ? '' : undefined}
+            data-timeline-item
+            data-no-drag
+          >
+            <span class="timeline__dot" aria-hidden="true" />
+            <article class="timeline__card">
+              <p class="timeline__period">
+                {item.period}
+                {entry.current && <span class="timeline__now">{copy.currentLabel}</span>}
+              </p>
+              <h3 class="timeline__role">{item.title}</h3>
+              <p class="timeline__org">{item.org}</p>
+              {item.highlight && <p class="timeline__highlight">{item.highlight}</p>}
+              <p class="timeline__summary">{item.summary}</p>
+              {
+                entry.tags && (
+                  <ul class="timeline__tags">
+                    {entry.tags.map((tag) => (
+                      <li>{tag}</li>
+                    ))}
+                  </ul>
+                )
+              }
+            </article>
+          </li>
+        );
+      })
+    }
+  </ol>
+</section>

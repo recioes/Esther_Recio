@@ -1,4 +1,5 @@
 import { createBurst } from '../lib/sparkles';
+import { createStar, removeWhenDone } from './sparkle-dom';
 
 /**
  * Ao passar o mouse (ou tocar) no nome: explosão de estrelas e um foguete cruzando.
@@ -7,24 +8,6 @@ import { createBurst } from '../lib/sparkles';
 const SPARKLE_COUNT = 18;
 const TRAIL_COUNT = 8;
 const ROCKET_DURATION_MS = 1800;
-const SVG_NS = 'http://www.w3.org/2000/svg';
-const STAR_PATH =
-  'M12 0C12.8 7.2 16.8 11.2 24 12C16.8 12.8 12.8 16.8 12 24C11.2 16.8 7.2 12.8 0 12C7.2 11.2 11.2 7.2 12 0Z';
-
-function createStar(className: string): SVGSVGElement {
-  const svg = document.createElementNS(SVG_NS, 'svg');
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('class', className);
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute('d', STAR_PATH);
-  svg.append(path);
-  return svg;
-}
-
-function removeWhenDone(element: Element): void {
-  element.addEventListener('animationend', () => element.remove(), { once: true });
-}
-
 function spawnSparkles(layer: HTMLElement): void {
   for (const sparkle of createBurst(SPARKLE_COUNT)) {
     const star = createStar('sparkle');
@@ -74,14 +57,24 @@ function spawnRocket(layer: HTMLElement): void {
   }
 }
 
-export function enhanceName(reducedMotion: boolean): void {
+export interface NameEffects {
+  /** Dispara a explosão de estrelas (e o foguete, se houver movimento) sem esperar o mouse. */
+  celebrate(): void;
+}
+
+export function enhanceName(reducedMotion: boolean): NameEffects {
   const root = document.querySelector<HTMLElement>('[data-sparkle]');
   const layer = root?.querySelector<HTMLElement>('[data-sparkle-layer]');
-  if (!root || !layer) return;
+  if (!root || !layer) {
+    return {
+      celebrate() {
+        // Sem o nome na página (ex.: nada a animar): nenhum efeito.
+      },
+    };
+  }
 
   let busy = false;
-  // pointerenter cobre mouse e toque (cada toque gera um novo enter).
-  root.addEventListener('pointerenter', () => {
+  const celebrate = (): void => {
     if (busy) return;
     busy = true;
     // Com movimento reduzido, as estrelas só acendem no lugar (ver CSS) e não há foguete.
@@ -90,5 +83,8 @@ export function enhanceName(reducedMotion: boolean): void {
     window.setTimeout(() => {
       busy = false;
     }, ROCKET_DURATION_MS);
-  });
+  };
+  // pointerenter cobre mouse e toque (cada toque gera um novo enter).
+  root.addEventListener('pointerenter', celebrate);
+  return { celebrate };
 }

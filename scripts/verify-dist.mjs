@@ -99,6 +99,27 @@ const CHECKS = [
     failures: unsafeBlankTargets,
   },
   {
+    name: 'prévia de compartilhamento (og:image 1200×630 e twitter:card grande)',
+    failures: (html) => {
+      const problems = [];
+      if (
+        !/<meta[^>]+property=["']og:image["'][^>]+content=["']https:\/\/[^"']+og-image\.jpg["']/i.test(
+          html,
+        )
+      ) {
+        problems.push('og:image ausente ou fora do padrão');
+      }
+      if (!/og:image:width["'][^>]+content=["']1200["']/i.test(html))
+        problems.push('og:image:width');
+      if (!/og:image:height["'][^>]+content=["']630["']/i.test(html))
+        problems.push('og:image:height');
+      if (!/twitter:card["'][^>]+content=["']summary_large_image["']/i.test(html)) {
+        problems.push('twitter:card');
+      }
+      return problems;
+    },
+  },
+  {
     name: 'atributo lang no <html>',
     failures: (html) => (/<html\b[^>]*\slang=["']?[a-z]{2}/i.test(html) ? [] : ['ausente']),
   },

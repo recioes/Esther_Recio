@@ -1,0 +1,233 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .stage {
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline {
+    width: min(100% - var(--space-5), 40rem);
+    margin: 0 auto;
+    padding: var(--space-6) 0 calc(var(--space-8) * 2);
+    scroll-margin-top: var(--space-4);
+  }
+
+  .timeline__header {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-7);
+    text-align: center;
+  }
+
+  .timeline__title {
+    margin: 0;
+    background: var(--gradient-title);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: clamp(1.9rem, 6vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+
+  .timeline__intro {
+    max-width: 30rem;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+  }
+
+  .timeline__list {
+    position: relative;
+    display: grid;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Trilho vertical: roxo no topo, rosa embaixo, esmaecendo no fim. */
+  .timeline__list::before {
+    content: "";
+    position: absolute;
+    top: 1.5rem;
+    bottom: 0.5rem;
+    left: 0.6875rem;
+    width: 2px;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(
+      180deg,
+      var(--color-purple-500),
+      var(--color-pink-500) 65%,
+      transparent
+    );
+    opacity: 0.55;
+  }
+
+  .timeline__item {
+    position: relative;
+    padding-left: 2.75rem;
+  }
+
+  /* Marcador: círculo para trabalho, losango para formação. */
+  .timeline__dot {
+    position: absolute;
+    top: 1.35rem;
+    left: 0;
+    width: 1.375rem;
+    height: 1.375rem;
+    border: 2px solid var(--color-pink-300);
+    border-radius: 50%;
+    background: var(--color-bg);
+    box-shadow:
+      0 0 0 4px rgb(var(--accent-rgb) / 0.2),
+      0 0 18px rgb(var(--accent2-rgb) / 0.75);
+    transition:
+      border-color var(--dur-slow) var(--ease-out),
+      box-shadow var(--dur-slow) var(--ease-out),
+      opacity var(--dur-slow) var(--ease-out);
+  }
+
+  .timeline__dot::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: inherit;
+    background: var(--gradient-brand);
+  }
+
+  .timeline__item[data-kind="education"] .timeline__dot {
+    border-radius: 6px;
+    rotate: 45deg;
+  }
+
+  /* Em andamento: anel que pulsa. */
+  .timeline__item[data-current] .timeline__dot::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--color-pink-300);
+    border-radius: inherit;
+    animation: timeline-pulse 2.2s ease-out infinite;
+  }
+
+  .timeline__card {
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out),
+      border-color var(--dur-med) var(--ease-out);
+  }
+
+  /* Com JS, os itens começam apagados e acendem ao entrar na tela (ver timeline-reveal.ts). */
+  .timeline-ready .timeline__item:not(.is-lit) .timeline__card {
+    opacity: 0.3;
+    transform: translateY(14px);
+  }
+
+  .timeline-ready .timeline__item:not(.is-lit) .timeline__dot {
+    border-color: var(--color-purple-500);
+    box-shadow: none;
+    opacity: 0.45;
+  }
+
+  .timeline__period {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .timeline__now {
+    padding: 1px var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--gradient-action);
+    color: #ffffff;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+
+  .timeline__role {
+    margin: var(--space-1) 0 0;
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .timeline__org {
+    color: var(--color-pink-300);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .timeline__highlight {
+    display: inline-flex;
+    margin-top: var(--space-2);
+    padding: 2px var(--space-3);
+    border: 1px solid rgb(var(--accent-rgb) / 0.4);
+    border-radius: var(--radius-pill);
+    background: rgb(var(--accent-rgb) / 0.16);
+    color: var(--color-lilac);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .timeline__highlight::before {
+    content: "✦";
+    margin-right: var(--space-2);
+    color: var(--color-pink-300);
+  }
+
+  .timeline__summary {
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .timeline__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .timeline__tags li {
+    padding: 1px var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .timeline__card:hover {
+      border-color: rgb(var(--accent2-rgb) / 0.55);
+    }
+  }
+
+  @keyframes timeline-pulse {
+    from {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: scale(2.2);
+    }
+  }
+}

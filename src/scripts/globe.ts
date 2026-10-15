@@ -4,6 +4,7 @@ import {
   BufferGeometry,
   Color,
   type ColorSpace,
+  Euler,
   Float32BufferAttribute,
   Group,
   Mesh,
@@ -22,6 +23,7 @@ import {
   WebGLRenderer,
 } from 'three';
 import { joinBase } from '../lib/base-path';
+import { boostEnvelope } from '../lib/boost';
 import {
   applyDrag,
   cameraDistance,
@@ -32,7 +34,10 @@ import {
   type Rotation,
   viewRotation,
 } from '../lib/globe-math';
+import { type MarkerId, pickNearest } from '../lib/markers';
 import { createRng, starPositions } from '../lib/stars';
+import { sunDirectionForDate } from '../lib/sun';
+import { createMarkerLayer } from './globe-markers';
 import {
   ATMOSPHERE_FRAGMENT,
   ATMOSPHERE_VERTEX,
@@ -41,14 +46,36 @@ import {
   SURFACE_VERTEX,
 } from './globe-shaders';
 
+/** Interface que mostra o rótulo de um ponto luminoso (implementada fora, em globe-tooltip.ts). */
+export interface MarkerUi {
+  show(id: MarkerId, x: number, y: number): void;
+  move(x: number, y: number): void;
+  hide(): void;
+}
+
 export interface GlobeOptions {
   readonly reducedMotion: boolean;
   readonly saveData: boolean;
+  /** Toque/clique rápido no globo (sem arrastar e fora dos pontos luminosos). */
+  readonly onTap?: () => void;
+  readonly markerUi?: MarkerUi;
 }
 
-// Vista inicial centrada no Brasil; sol vindo da esquerda-frente.
+/** Controles que os easter eggs usam para mexer no globo. Sem efeito com movimento reduzido. */
+export interface GlobeHandle {
+  boost(multiplier: number, durationMs: number): void;
+  dizzy(durationMs: number): void;
+  setPalette(glow: number, twilight: number): void;
+}
+
+// Vista inicial centrada no Brasil. O sol segue a hora real do visitante (ver lib/sun.ts).
 const INITIAL_VIEW = { lat: -12, lon: -50 } as const;
-const SUN_DIRECTION = new Vector3(-0.75, 0.38, 0.62).normalize();
+const SUN_REFRESH_MS = 30_000;
+const HOVER_RADIUS_PX = 20;
+const TAP_RADIUS_PX = 32;
+const TAP_SLOP_PX = 6;
+const TAP_MAX_MS = 350;
+const PIN_MS = 3200;
 const FOV_DEGREES = 38;
 const MAX_PITCH = 1.1;
 const MAX_VELOCITY = 3.5;
@@ -57,6 +84,8 @@ const CLOUD_DRIFT_SPEED = 0.012; // rad/s relativo à superfície
 const INERTIA_HALF_LIFE = 0.55;
 const PITCH_RETURN_HALF_LIFE = 3.5;
 const STAR_COUNT = 1100;
+/** Elementos com efeito próprio (monograma, nome): arrastar o globo funciona, mas o toque não conta. */
+const NO_TAP_SELECTOR = '[data-no-tap]';
 const INTERACTIVE_SELECTOR = 'a, button, input, select, textarea, summary, [data-no-drag]';
 
 const PURPLE = 0x8b5cf6;
@@ -94,7 +123,7 @@ function createStars(pixelRatio: number): Points {
 }
 
 /** Monta o globo 3D dentro de `root`. Lança erro se WebGL ou as texturas falharem. */
-export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Promise<void> {
+export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Promise<GlobeHandle> {
   const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
   const renderer = new WebGLRenderer({ antialias: true, alpha: true });
   renderer.setClearColor(0x000000, 0);
@@ -115,6 +144,12 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     loadTexture(loader, textureUrl('earth-clouds-2k.webp'), NoColorSpace, anisotropy),
   ]);
 
+  // Direção do Sol: fixa na superfície (referencial da textura) e girada junto com o globo.
+  const sunLocal = new Vector3(...sunDirectionForDate(new Date()));
+  const sunWorld = new Vector3();
+  const sunEuler = new Euler();
+  let sunUpdatedAt = 0;
+
   const scene = new Scene();
   const camera = new PerspectiveCamera(FOV_DEGREES, 1, 0.1, 200);
 
@@ -127,7 +162,7 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
       uniforms: {
         dayMap: { value: dayMap },
         nightMap: { value: nightMap },
-        sunDirection: { value: SUN_DIRECTION },
+        sunDirection: { value: sunWorld },
         twilightColor: { value: new Color(PINK) },
         rimColor: { value: new Color(LILAC) },
       },
@@ -140,10 +175,11 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
       fragmentShader: CLOUDS_FRAGMENT,
       transparent: true,
       depthWrite: false,
-      uniforms: { cloudMap: { value: cloudMap }, sunDirection: { value: SUN_DIRECTION } },
+      uniforms: { cloudMap: { value: cloudMap }, sunDirection: { value: sunWorld } },
     }),
   );
   globe.add(earth, clouds);
+  const markers = createMarkerLayer(globe, !options.reducedMotion);
 
   const atmosphere = new Mesh(
     new SphereGeometry(1.14, 64, 48),
@@ -176,6 +212,25 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
   let lastMoveTime = 0;
   let rafId = 0;
   let lastFrame = 0;
+  let clock = 0;
+  // Efeitos temporários dos easter eggs.
+  let boostPeak = 1;
+  let boostStart = 0;
+  let boostDuration = 0;
+  let dizzyStart = 0;
+  let dizzyDuration = 0;
+  // Interação com os pontos luminosos.
+  let pointerX = 0;
+  let pointerY = 0;
+  let pointerOnGlobe = false;
+  let pinnedId: MarkerId | undefined;
+  let pinnedUntil = 0;
+  let shownId: MarkerId | undefined;
+  let downX = 0;
+  let downY = 0;
+  let downTime = 0;
+  let downTarget: EventTarget | null = null;
+  const viewEuler = new Euler();
 
   const resize = (): void => {
     const width = root.clientWidth;
@@ -190,10 +245,52 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
   };
 
   const draw = (): void => {
-    globe.rotation.set(rotation.x, rotation.y, 0);
+    const wobble = boostEnvelope(clock - dizzyStart, dizzyDuration);
+    const tilt = Math.sin((clock - dizzyStart) * 0.035) * 0.22 * wobble;
+    globe.rotation.set(rotation.x, rotation.y, tilt);
     clouds.rotation.y = cloudDrift;
     stars.rotation.set(rotation.x * 0.04, rotation.y * 0.04, 0);
+
+    if (clock - sunUpdatedAt > SUN_REFRESH_MS) {
+      sunLocal.set(...sunDirectionForDate(new Date()));
+      sunUpdatedAt = clock;
+    }
+    sunWorld.copy(sunLocal).applyEuler(sunEuler.set(rotation.x, rotation.y, 0));
+
+    markers.animate(clock);
     renderer.render(scene, camera);
+  };
+
+  /** Mostra/move/esconde o rótulo do ponto luminoso sob o ponteiro (ou o que foi tocado). */
+  const refreshMarkers = (): void => {
+    const ui = options.markerUi;
+    if (!ui) return;
+    const screen = markers.project(
+      viewEuler.set(rotation.x, rotation.y, globe.rotation.z),
+      camera,
+      root.clientWidth,
+      root.clientHeight,
+    );
+
+    let target: (typeof screen)[number] | undefined;
+    if (pinnedId !== undefined && clock < pinnedUntil) {
+      target = screen.find((marker) => marker.id === pinnedId && marker.visible);
+    } else {
+      pinnedId = undefined;
+      if (pointerOnGlobe && !dragging) {
+        target = pickNearest(screen, pointerX, pointerY, HOVER_RADIUS_PX);
+      }
+    }
+
+    if (!target) {
+      if (shownId !== undefined) ui.hide();
+      shownId = undefined;
+    } else if (shownId !== target.id) {
+      shownId = target.id;
+      ui.show(target.id, target.x, target.y);
+    } else {
+      ui.move(target.x, target.y);
+    }
   };
 
   const update = (dt: number): void => {
@@ -214,9 +311,10 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     if (options.reducedMotion) return;
 
     const returnFactor = 1 - 0.5 ** (dt / PITCH_RETURN_HALF_LIFE);
+    const speedUp = 1 + (boostPeak - 1) * boostEnvelope(clock - boostStart, boostDuration);
     rotation = {
       x: rotation.x + (home.x - rotation.x) * returnFactor,
-      y: rotation.y + AUTO_ROTATE_SPEED * dt,
+      y: rotation.y + AUTO_ROTATE_SPEED * speedUp * dt,
     };
     cloudDrift += CLOUD_DRIFT_SPEED * dt;
   };
@@ -231,8 +329,10 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     rafId = 0;
     const dt = Math.min((now - lastFrame) / 1000, 0.05);
     lastFrame = now;
+    clock = now;
     update(dt);
     draw();
+    refreshMarkers();
     if (shouldAnimate()) rafId = requestAnimationFrame(frame);
   };
 
@@ -254,6 +354,10 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     lastX = event.clientX;
     lastY = event.clientY;
     lastMoveTime = event.timeStamp;
+    downX = event.clientX;
+    downY = event.clientY;
+    downTime = event.timeStamp;
+    downTarget = event.target;
     velocityX = 0;
     velocityY = 0;
     html.classList.add('is-dragging', 'globe-dragged');
@@ -287,10 +391,35 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     { passive: true },
   );
 
+  /** Toque sobre um ponto luminoso fixa o rótulo por um tempo; fora dele, conta como toque no globo. */
+  const handleTap = (x: number, y: number): void => {
+    clock = performance.now();
+    const screen = markers.project(
+      viewEuler.set(rotation.x, rotation.y, globe.rotation.z),
+      camera,
+      root.clientWidth,
+      root.clientHeight,
+    );
+    const hit = pickNearest(screen, x, y, TAP_RADIUS_PX);
+    if (hit) {
+      pinnedId = hit.id;
+      pinnedUntil = clock + PIN_MS;
+      refreshMarkers();
+    } else {
+      options.onTap?.();
+    }
+  };
+
   const endDrag = (event: PointerEvent): void => {
     if (!dragging || event.pointerId !== activePointer) return;
     dragging = false;
     html.classList.remove('is-dragging');
+    const wasTap =
+      event.type === 'pointerup' &&
+      Math.hypot(event.clientX - downX, event.clientY - downY) < TAP_SLOP_PX &&
+      event.timeStamp - downTime < TAP_MAX_MS &&
+      !(downTarget instanceof Element && downTarget.closest(NO_TAP_SELECTOR));
+    if (wasTap) handleTap(event.clientX, event.clientY);
     // Parou antes de soltar, ou prefere menos movimento: sem inércia.
     const pausedBeforeRelease = event.timeStamp - lastMoveTime > 80;
     if (pausedBeforeRelease || options.reducedMotion) {
@@ -299,6 +428,23 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     }
     requestFrame();
   };
+  window.addEventListener(
+    'pointermove',
+    (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      pointerOnGlobe = event.pointerType === 'mouse' && !isInteractive(event.target);
+      if (!dragging) {
+        clock = performance.now();
+        refreshMarkers();
+      }
+    },
+    { passive: true },
+  );
+  document.documentElement.addEventListener('mouseleave', () => {
+    pointerOnGlobe = false;
+    refreshMarkers();
+  });
   window.addEventListener('pointerup', endDrag);
   window.addEventListener('pointercancel', endDrag);
 
@@ -316,4 +462,25 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
   root.append(renderer.domElement);
   resize();
   draw();
+
+  return {
+    boost(multiplier, durationMs) {
+      if (options.reducedMotion) return;
+      boostPeak = Math.max(1, multiplier);
+      boostStart = performance.now();
+      boostDuration = durationMs;
+      requestFrame();
+    },
+    dizzy(durationMs) {
+      if (options.reducedMotion) return;
+      dizzyStart = performance.now();
+      dizzyDuration = durationMs;
+      requestFrame();
+    },
+    setPalette(glow, twilight) {
+      (atmosphere.material as ShaderMaterial).uniforms.glowColor?.value.set(glow);
+      (earth.material as ShaderMaterial).uniforms.twilightColor?.value.set(twilight);
+      requestFrame();
+    },
+  };
 }

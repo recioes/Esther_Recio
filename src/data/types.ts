@@ -15,3 +15,22 @@ export interface ProfileLink {
   readonly icon: IconName;
   readonly href: HttpsUrl;
 }
+
+export type TimelineId =
+  | 'zenvia'
+  | 'clearsale'
+  | 'uniceub'
+  | 'americanas'
+  | 'afinidade'
+  | 'interpreter'
+  | 'unb';
+
+export type TimelineKind = 'work' | 'education';
+
+export interface TimelineEntry {
+  readonly id: TimelineId;
+  readonly kind: TimelineKind;
+  /** Em andamento: o marcador pulsa. */
+  readonly current?: boolean;
+  readonly tags?: readonly string[];
+}

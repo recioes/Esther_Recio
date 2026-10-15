@@ -12,10 +12,10 @@ const { name, initials, role } = Astro.props;
 ---
 
 <header class="hero reveal" data-reveal="1">
-  <div class="hero__monogram" aria-hidden="true">
+  <div class="hero__monogram" aria-hidden="true" data-no-tap>
     <span>{initials}</span>
   </div>
-  <div class="hero__name-wrap" data-sparkle>
+  <div class="hero__name-wrap" data-sparkle data-no-tap>
     <h1 class="hero__name">{name}</h1>
     <span class="sparkle-layer" data-sparkle-layer aria-hidden="true"></span>
   </div>
