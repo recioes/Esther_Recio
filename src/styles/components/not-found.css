@@ -1,0 +1,80 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  .lost {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: var(--space-3);
+    min-height: 100dvh;
+    padding: var(--space-8) var(--space-4);
+    text-align: center;
+  }
+
+  /* O satélite à deriva: balança devagar de um lado para o outro. */
+  .lost__satellite {
+    font-size: clamp(3.5rem, 12vw, 6rem);
+    line-height: 1;
+    filter: drop-shadow(0 0 18px rgb(var(--accent-rgb) / 0.6));
+    animation: lost-drift 7s ease-in-out infinite alternate;
+  }
+
+  .lost__code {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: clamp(4rem, 18vw, 8rem);
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    line-height: 1;
+  }
+
+  .lost__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .lost__text {
+    max-width: 28rem;
+    color: var(--color-text-muted);
+  }
+
+  .lost__text--en {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  .lost__back {
+    display: inline-grid;
+    place-items: center;
+    min-height: 2.75rem;
+    margin-top: var(--space-4);
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--radius-pill);
+    background: var(--gradient-action);
+    color: #ffffff;
+    font-weight: 600;
+    transition: transform var(--dur-med) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lost__back:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  @keyframes lost-drift {
+    from {
+      transform: translate(-1.75rem, 0.5rem) rotate(-14deg);
+    }
+
+    to {
+      transform: translate(1.75rem, -0.75rem) rotate(16deg);
+    }
+  }
+}

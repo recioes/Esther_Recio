@@ -7,6 +7,7 @@ import { assertValidLinks } from '../lib/links';
 import Hero from './Hero.astro';
 import LanguageSwitch from './LanguageSwitch.astro';
 import LinkCard from './LinkCard.astro';
+import Timeline from './Timeline.astro';
 
 interface Props {
   readonly dict: Dictionary;
@@ -18,23 +19,38 @@ const { dict } = Astro.props;
 assertValidLinks(PROFILE_LINKS);
 ---
 
-<main class="page">
-  <LanguageSwitch dict={dict} />
-  <Hero name={PROFILE.name} initials={PROFILE.initials} role={dict.role} />
-  <nav class="page__nav" aria-label={dict.linksLabel}>
-    <ul class="page__links">
-      {
-        PROFILE_LINKS.map((link) => (
-          <li class="reveal">
-            <LinkCard
-              link={link}
-              copy={dict.links[link.id]}
-              newTabHint={dict.newTabHint}
-            />
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-  <p class="globe-hint" aria-hidden="true">{dict.globeHint}</p>
+<main class="stage">
+  <div class="page">
+    <LanguageSwitch dict={dict} />
+    <Hero name={PROFILE.name} initials={PROFILE.initials} role={dict.role} />
+    <nav class="page__nav" aria-label={dict.linksLabel}>
+      <ul class="page__links">
+        {
+          PROFILE_LINKS.map((link) => (
+            <li class="reveal">
+              <LinkCard
+                link={link}
+                copy={dict.links[link.id]}
+                newTabHint={dict.newTabHint}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <a class="page__cue reveal" href="#trajetoria">
+      <span>{dict.timeline.cue}</span>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+        <path
+          d="M6 9l6 6 6-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+    </a>
+    <p class="globe-hint" aria-hidden="true">{dict.globeHint}</p>
+  </div>
+  <Timeline dict={dict} />
 </main>

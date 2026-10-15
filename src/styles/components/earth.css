@@ -54,9 +54,10 @@
   .earth__veil {
     position: absolute;
     inset: 0;
+    transition: opacity var(--dur-slow) var(--ease-out);
     background:
-      radial-gradient(ellipse at 15% 0%, rgb(139 92 246 / 0.34), transparent 55%),
-      radial-gradient(ellipse at 90% 100%, rgb(236 72 153 / 0.26), transparent 55%),
+      radial-gradient(ellipse at 15% 0%, rgb(var(--veil-a-rgb) / 0.34), transparent 55%),
+      radial-gradient(ellipse at 90% 100%, rgb(var(--veil-b-rgb) / 0.26), transparent 55%),
       linear-gradient(180deg, rgb(7 6 11 / 0.42), rgb(7 6 11 / 0.74));
   }
 }

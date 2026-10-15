@@ -3,6 +3,8 @@
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '@fontsource-variable/inter/wght.css';
+import '../styles/components/sparkles.css';
+import '../styles/components/easter.css';
 import EarthBackdrop from '../components/EarthBackdrop.astro';
 import { dictionaries, pagePath } from '../i18n';
 import type { Dictionary } from '../i18n/types';
@@ -11,14 +13,20 @@ import { CONTENT_SECURITY_POLICY } from '../lib/csp';
 
 interface Props {
   readonly dict: Dictionary;
+  /** Substitui o título padrão (ex.: página 404). */
+  readonly title?: string;
+  /** Páginas que não devem aparecer em buscadores (ex.: 404). */
+  readonly noindex?: boolean;
 }
 
-const { dict } = Astro.props;
+const { dict, title = dict.title, noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const absolute = (path: string): string => new URL(joinBase(base, path), Astro.site).href;
 const alternates = Object.values(dictionaries);
 const canonicalUrl = absolute(pagePath(dict));
-const previewImage = absolute('media/earth-poster.jpg');
+// 1200×630 (proporção 1,91:1 que LinkedIn, WhatsApp e X mostram sem cortar). Gerada por scripts/generate-og-image.mjs.
+const previewImage = absolute('media/og-image.jpg');
+const OG_IMAGE_SIZE = { width: 1200, height: 630 } as const;
 ---
 
 <!doctype html>
@@ -35,23 +43,46 @@ const previewImage = absolute('media/earth-poster.jpg');
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#07060b" />
-    <title>{dict.title}</title>
+    <title>{title}</title>
     <meta name="description" content={dict.description} />
+    <meta name="author" content="Esther Recio" />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href={joinBase(base, 'favicon.svg')} />
-    <link rel="canonical" href={canonicalUrl} />
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
     {
-      alternates.map((alternate) => (
-        <link rel="alternate" hreflang={alternate.htmlLang} href={absolute(pagePath(alternate))} />
-      ))
+      !noindex &&
+        alternates.map((alternate) => (
+          <link
+            rel="alternate"
+            hreflang={alternate.htmlLang}
+            href={absolute(pagePath(alternate))}
+          />
+        ))
     }
-    <link rel="alternate" hreflang="x-default" href={absolute('')} />
+    {!noindex && <link rel="alternate" hreflang="x-default" href={absolute('')} />}
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={dict.title} />
+    <meta property="og:site_name" content="Esther Recio" />
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={dict.description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content={dict.htmlLang.replace('-', '_')} />
+    {
+      alternates
+        .filter((alternate) => alternate.locale !== dict.locale)
+        .map((alternate) => (
+          <meta property="og:locale:alternate" content={alternate.htmlLang.replace('-', '_')} />
+        ))
+    }
     <meta property="og:image" content={previewImage} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content={String(OG_IMAGE_SIZE.width)} />
+    <meta property="og:image:height" content={String(OG_IMAGE_SIZE.height)} />
+    <meta property="og:image:alt" content={dict.ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={dict.description} />
+    <meta name="twitter:image" content={previewImage} />
+    <meta name="twitter:image:alt" content={dict.ogImageAlt} />
   </head>
   <body>
     <EarthBackdrop />
