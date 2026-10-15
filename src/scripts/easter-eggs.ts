@@ -1,8 +1,8 @@
 import { PROFILE_LINKS } from '../data/links';
-import { tapBoostMultiplier } from '../lib/boost';
-import { dayPeriod, formatClock } from '../lib/greeting';
 import { DEFAULT_LOCALE, dictionaries } from '../i18n';
 import type { Dictionary } from '../i18n/types';
+import { tapBoostMultiplier } from '../lib/boost';
+import { dayPeriod, formatClock } from '../lib/greeting';
 import {
   createSequenceMatcher,
   KONAMI_SEQUENCE,

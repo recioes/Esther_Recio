@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { dayPeriod, formatClock } from '../../src/lib/greeting';
-import { sunDirectionForDate, subsolarPoint, wrapLongitude } from '../../src/lib/sun';
+import { subsolarPoint, sunDirectionForDate, wrapLongitude } from '../../src/lib/sun';
 
 describe('wrapLongitude', () => {
   it('mantém a longitude em (-180, 180]', () => {
