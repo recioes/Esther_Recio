@@ -7,13 +7,13 @@ export const en: Dictionary = {
   shortName: 'EN',
   title: 'Esther Recio — Backend Developer',
   description:
-    'Esther Recio, Backend Developer at Zenvia (C#, .NET, Kafka). Career journey, LinkedIn, GitHub and Lattes.',
+    'Esther Recio, Backend Developer at Zenvia (C#, .NET, Kafka). Degrees in Business Administration and Systems Analysis and Development; native Portuguese and Spanish, fluent English.',
   ogImageAlt:
     'Esther Recio, Backend Developer, next to a globe of the Earth on a purple background.',
   role: 'Backend Developer',
   linksLabel: 'Professional profiles',
   languageSwitchLabel: 'Page language',
-  languageNames: { 'pt-BR': 'Português', en: 'English' },
+  languageNames: { 'pt-BR': 'Português', en: 'English', es: 'Español' },
   newTabHint: 'opens in a new tab',
   globeHint: 'Drag to spin the Earth',
   links: {
@@ -21,76 +21,187 @@ export const en: Dictionary = {
     github: { label: 'GitHub', description: 'Code and projects' },
     lattes: { label: 'Lattes', description: 'Academic résumé' },
   },
+  about: {
+    title: 'About',
+    lead: 'Backend developer with one foot in business and the other in code.',
+    paragraphs: [
+      'I work at Zenvia with C# and .NET, building services that handle a lot of traffic. I got there straight from my internship at ClearSale, after starting my career in Business Administration. That mix of Administration and systems gives me a business perspective when I write code.',
+    ],
+  },
+  languages: {
+    title: 'Languages',
+    intro:
+      'Three languages, two of them native: I was born in Brazil, spent part of my childhood in Spain, and English led me to work as an interpreter at 17.',
+    levels: { native: 'Native', fluent: 'Fluent' },
+    items: {
+      pt: { name: 'Português', detail: 'Mother tongue.' },
+      es: {
+        name: 'Español',
+        detail:
+          'I lived in Spain for six years from age two, and learned to read and write there, at Colegio Calasanz de Villacarriedo. A large part of my family is Spanish.',
+      },
+      en: {
+        name: 'English',
+        detail:
+          'Studied at Casa Thomas Jefferson in Brasília. My strong results led to three interpreting jobs, the first at 17.',
+      },
+    },
+    note: 'Growing up between two countries and two languages gave me familiarity with different cultural contexts, useful in distributed teams and cross-cultural communication. It is personal and family experience, separate from my professional experience, which so far has been in Brazil.',
+  },
   timeline: {
     title: 'Journey',
     intro: 'From Business Administration to backend: a transition built step by step.',
-    cue: 'See my journey',
+    cue: 'Explore my journey',
+    present: 'present',
     currentLabel: 'ongoing',
+    kindLabels: { work: 'Experience', education: 'Education' },
     items: {
       zenvia: {
-        period: 'Jun 2024 — present',
         title: 'Backend Developer',
         org: 'Zenvia',
         summary:
-          'High-volume services in C# and .NET: Pub/Sub to Kafka migration, AWS migrations, distributed caching with Redis, observability with Grafana and load testing with k6. Took part in database migrations that cut roughly R$ 570k in infrastructure costs.',
+          'Backend services in C# and .NET (APIs, workers, microservices and high-volume messaging), including adapting services for large enterprise customers.',
         highlight: 'From internship straight to Junior Dev',
+        points: [
+          'Migrated several applications from Google Pub/Sub to Apache Kafka: topics, consumers, DLQs and end-to-end validation.',
+          'Migrated applications to AWS, with load testing and production readiness alongside the SRE team.',
+          'Introduced Redis as a distributed cache in place of in-memory caching, across microservices.',
+          'Led an observability initiative: Grafana alerts on Slack with Go templates, dashboards and trigger conditions.',
+          'Worked in a Security Champion-like role: fixed SSRF and vulnerable dependencies, following OWASP guidance.',
+          'Took part in database migrations that cut roughly R$ 570k in infrastructure costs.',
+        ],
       },
       clearsale: {
-        period: 'Aug 2023 — Jun 2024',
         title: 'Backend Internship',
         org: 'ClearSale',
         summary:
-          'REST APIs and BFFs in C#, unit tests with xUnit, quality gates with SonarQube, YAML pipelines on AKS, and SQL Server and MongoDB databases. The doorway to Zenvia.',
+          'Entered the tech industry in the first semester of college, and the doorway to Zenvia.',
         highlight: '40 spots, ~12k applicants',
+        points: [
+          'REST APIs and BFFs in C#: maintenance, bug fixes and new endpoints.',
+          'Unit tests with xUnit and quality analysis with SonarQube in CI/CD pipelines.',
+          'YAML pipelines for PR and DEV environments, publishing to AKS.',
+          'Pair programming sessions and part of the development of a C# query builder.',
+        ],
       },
       uniceub: {
-        period: 'Feb 2023 — Feb 2025',
         title: 'Systems Analysis and Development',
         org: 'UniCEUB',
         summary:
-          'A technology degree taken while entering the field: the education that supported the career transition.',
+          'A technology degree that added analytical reasoning and development practice to the business view from Administration: the education that supported the career transition.',
+        points: [
+          'Final project graded SS, the top mark. I learned the professor used it as a reference example for the following semester’s class.',
+          'Landed the ClearSale internship in the first semester of the course, before the second one began.',
+        ],
       },
       americanas: {
-        period: 'Jun 2022 — Nov 2022',
-        title: 'Commercial Management',
+        title: 'Commercial Manager',
         org: 'Americanas S.A.',
         summary:
-          'Store management, sales targets for Ame Digital and interim general management of one of the most important stores in the Federal District.',
+          'Store and team management, with sales targets and handling of complex customer cases.',
+        points: [
+          'Administrative management: treasury, time tracking, hiring, terminations and interviews.',
+          'Owned the Ame Digital sales targets, engaging teams through daily in-store actions.',
+          'Interim general manager of one of the most important stores in the Federal District (the central Brasília store).',
+        ],
       },
       afinidade: {
-        period: '2019 — 2022',
-        title: 'Customer Success (intern, then assistant)',
+        title: 'Customer Success Assistant',
         org: 'Grupo Afinidade',
         summary:
-          'B2B relationship with health and dental plans, process mapping with Bizagi, an action plan using 5W2H and point of contact for one of the largest accounts in the portfolio.',
+          'Relationship with B2B health and dental plan customers across several carriers, by email, WhatsApp and phone.',
+        points: [
+          'Registry changes (additions, removals and updates) and guidance on price adjustments, provider networks and reimbursement.',
+          'Department action plan using 5W2H and the GUT matrix; process mapping with Bizagi.',
+          'Point of contact for one of the largest accounts in the portfolio (about R$ 100k per month).',
+          'Temporary supervision of the team for three months.',
+        ],
+      },
+      nis: {
+        title: 'Administrative Assistant',
+        org: 'Núcleo de Integração Social (NIS), NGO',
+        summary:
+          'Support to the organization’s main social entrepreneurship project: administrative processes, official letters and statements, project and people management, and relationships with partner companies.',
+      },
+      afinidadeIntern: {
+        title: 'Customer Success Internship',
+        org: 'Grupo Afinidade',
+        summary:
+          'Support to business relationships with health and insurance brokers: registry changes, invoice issuing, contract management and reimbursements, with phone and email service.',
+      },
+      firz: {
+        title: 'Marketing Trainee',
+        org: 'Firz Consultoria',
+        summary:
+          'Hands-on marketing learning: building personas, basic Photoshop and creating visual identities.',
       },
       interpreter: {
-        period: 'Oct 2017 — Oct 2019',
         title: 'English interpreter (freelance)',
         org: 'Casa Thomas Jefferson',
         summary:
-          'Three editions of the Education USA Fair, interpreting for universities such as Kent State, Colorado Boulder and Missouri.',
+          'Three editions of the Education USA Fair (2017, 2018 and 2019), interpreting for representatives of Kent State, Colorado Boulder and Missouri universities.',
+        highlight: 'First job at 17',
+        points: [
+          'Strong results in the English course at Casa Thomas Jefferson, in Brasília, led to being selected for all three jobs.',
+        ],
       },
       unb: {
-        period: 'Aug 2017 — Feb 2022',
-        title: "Bachelor's in Business Administration",
+        title: 'Bachelor’s in Business Administration',
         org: 'University of Brasília (UnB)',
         summary:
-          'The foundation in management, research and critical thinking. An education that still matters today.',
+          'The foundation in management, research and critical thinking, which still matters today. Together with the systems degree, it forms the business-plus-technology mix I bring to work.',
         highlight: 'Admitted at age 17',
+        points: [
+          'Final project graded SS, the top mark. During the evaluation I received praise and the suggestion to consider a master’s degree.',
+          'Teaching assistantship, event organizing committee and a conference paper: see “Academic activities”.',
+        ],
+      },
+    },
+  },
+  academic: {
+    title: 'Academic activities',
+    intro: 'Research, teaching support and event organizing during my undergraduate years at UnB.',
+    publicationLabel: 'Publication',
+    publication: {
+      titleGloss: 'Evolution of GSCM Research: A Bibliometric Review for 2018 to 2020',
+      glossLabel: 'Free translation',
+      eventLabel: 'Presented at',
+      authorsLabel: 'Authors',
+      role: 'Lead author',
+      summary:
+        'A bibliometric review of how GSCM research evolved between 2018 and 2020, developed in the Organizational Logistics course in the second semester of 2020.',
+    },
+    activitiesLabel: 'Volunteering',
+    activities: {
+      monitoria: {
+        title: 'Volunteer teaching assistant, Modern Political Theory',
+        org: 'University of Brasília',
+        summary: 'Support to the professor in charge of the course and to its students.',
+        points: [
+          'Grading assignments and recording grades in tracking spreadsheets.',
+          'Answering students’ questions.',
+        ],
+      },
+      organizingCommittee: {
+        title: 'Organizing committee, Business Administration Academic Week 2021',
+        org: 'University of Brasília',
+        summary: 'Volunteer member of the organizing committee.',
+        points: [
+          'Helped organize the online events.',
+          'Host and co-host at the opening and closing sessions.',
+        ],
       },
     },
   },
   easter: {
     turbo: 'Turbo mode on 🚀',
     rocketRain: 'Rocket rain! 🚀',
-    moonOn: 'Moon mode on 🌙',
-    moonOff: 'Back to the usual sky ✨',
+    moonOn: 'The moon came out 🌙',
     nameGlow: 'You know my name 💜',
     wish: 'You made a wish ✨',
     shootingStarLabel: 'Shooting star: click to make a wish',
     dizzy: 'Easy, the planet is dizzy 🌍',
-    constellation: "You found Esther's Star ✨",
+    constellation: 'You found Esther’s Star ✨',
     trailOn: 'Stardust on ✨',
     trailOff: 'Stardust off',
     themes: {
@@ -105,11 +216,11 @@ export const en: Dictionary = {
       evening: 'Good evening! It is {time} where you are. The lights of Earth are on 🌃',
     },
     markers: {
-      brasilia: { title: 'Brasília', detail: 'Brazil' },
-      santander: { title: 'Santander', detail: 'Spain' },
+      brasilia: { title: 'Brasília', detail: 'Brazil · UnB and UniCEUB' },
+      santander: { title: 'Santander', detail: 'Spain · where I learned to read and write' },
     },
     consoleHello: 'Curious, huh? Nice that you opened the console 👀',
-    consoleCta: "Let's talk →",
+    consoleCta: 'Let’s talk →',
   },
   notFound: {
     title: 'Houston, we lost the signal',

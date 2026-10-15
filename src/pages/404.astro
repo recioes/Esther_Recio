@@ -3,11 +3,12 @@ import '../styles/components/not-found.css';
 import { PROFILE } from '../data/profile';
 import Base from '../layouts/Base.astro';
 import { en } from '../i18n/en';
+import { es } from '../i18n/es';
 import { ptBR } from '../i18n/pt-BR';
 import { joinBase } from '../lib/base-path';
 
 // O GitHub Pages serve este arquivo para qualquer endereço inexistente, sem saber o idioma:
-// por isso a página mostra os dois (PT em destaque, EN logo abaixo).
+// por isso a página mostra os três (PT em destaque, EN e ES logo abaixo).
 const home = joinBase(import.meta.env.BASE_URL, '');
 ---
 
@@ -19,6 +20,9 @@ const home = joinBase(import.meta.env.BASE_URL, '');
     <p class="lost__text">{ptBR.notFound.text}</p>
     <p class="lost__text lost__text--en" lang="en">
       {en.notFound.title}. {en.notFound.text}
+    </p>
+    <p class="lost__text lost__text--en" lang="es">
+      {es.notFound.title}. {es.notFound.text}
     </p>
     <a class="lost__back" href={home}>{ptBR.notFound.back}</a>
   </main>

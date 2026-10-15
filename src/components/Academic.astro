@@ -1,0 +1,69 @@
+---
+import '../styles/components/sections.css';
+import { ACTIVITIES, PUBLICATION } from '../data/academic';
+import type { Dictionary } from '../i18n/types';
+import { formatFullDate, formatPeriod } from '../lib/period';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const copy = dict.academic;
+const publication = copy.publication;
+---
+
+<section class="section" id="academico" aria-labelledby="academic-title">
+  <header class="section__header">
+    <h2 class="section__title" id="academic-title">{copy.title}</h2>
+    <p class="section__intro">{copy.intro}</p>
+  </header>
+
+  <h3 class="section__label">{copy.publicationLabel}</h3>
+  <article class="panel pub">
+    <p class="pub__role">{publication.role}</p>
+    <h4 class="pub__title" lang="pt-BR">{PUBLICATION.title}</h4>
+    {
+      publication.titleGloss && (
+        <p class="pub__gloss">
+          <span class="pub__gloss-label">{publication.glossLabel}:</span> {publication.titleGloss}
+        </p>
+      )
+    }
+    <p class="pub__summary">{publication.summary}</p>
+    <dl class="pub__meta">
+      <div>
+        <dt>{publication.eventLabel}</dt>
+        <dd lang="pt-BR">
+          {PUBLICATION.event}, <time datetime={PUBLICATION.date}>{formatFullDate(PUBLICATION.date, dict.htmlLang)}</time>
+        </dd>
+      </div>
+      <div>
+        <dt>{publication.authorsLabel}</dt>
+        <dd>{PUBLICATION.authors.join(' · ')}</dd>
+      </div>
+    </dl>
+  </article>
+
+  <h3 class="section__label">{copy.activitiesLabel}</h3>
+  <ul class="activity-list">
+    {
+      ACTIVITIES.map((activity) => {
+        const item = copy.activities[activity.id];
+        return (
+          <li class="panel activity">
+            <p class="activity__period">
+              {formatPeriod(activity.start, activity.end, dict.htmlLang, dict.timeline.present)}
+            </p>
+            <h4 class="activity__title">{item.title}</h4>
+            <p class="activity__org">{item.org}</p>
+            <p class="activity__summary">{item.summary}</p>
+            <ul class="bullets">
+              {item.points.map((point) => <li>{point}</li>)}
+            </ul>
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>

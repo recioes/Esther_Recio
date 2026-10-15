@@ -1,0 +1,36 @@
+---
+import '../styles/components/sections.css';
+import { LANGUAGES } from '../data/academic';
+import type { Dictionary } from '../i18n/types';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const copy = dict.languages;
+---
+
+<section class="section" id="idiomas" aria-labelledby="languages-title">
+  <header class="section__header">
+    <h2 class="section__title" id="languages-title">{copy.title}</h2>
+    <p class="section__intro">{copy.intro}</p>
+  </header>
+  <ul class="lang-grid">
+    {
+      LANGUAGES.map((language) => {
+        const item = copy.items[language.id];
+        return (
+          <li class="panel lang-card" data-level={language.level}>
+            <p class="lang-card__level">{copy.levels[language.level]}</p>
+            <h3 class="lang-card__name" lang={language.id === 'pt' ? 'pt-BR' : language.id}>
+              {item.name}
+            </h3>
+            <p class="lang-card__detail">{item.detail}</p>
+          </li>
+        );
+      })
+    }
+  </ul>
+  <p class="section__note">{copy.note}</p>
+</section>

@@ -1,0 +1,21 @@
+---
+import '../styles/components/sections.css';
+import type { Dictionary } from '../i18n/types';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const copy = dict.about;
+---
+
+<section class="section" id="sobre" aria-labelledby="about-title">
+  <header class="section__header">
+    <h2 class="section__title" id="about-title">{copy.title}</h2>
+    <p class="section__lead">{copy.lead}</p>
+  </header>
+  <div class="panel prose">
+    {copy.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</section>
