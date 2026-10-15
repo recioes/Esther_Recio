@@ -1,69 +1,103 @@
-# Esther Recio — página de links
+# Esther Recio — links page
 
-Página pessoal com meus perfis profissionais (LinkedIn, GitHub e Lattes), sobre a Terra girando em dia e noite. Online em https://recioes.github.io/Esther_Recio/
+Personal page with my professional profiles (LinkedIn, GitHub and Lattes), my career journey, and a spinning Earth that follows the visitor's local time. Live at https://recioes.github.io/Esther_Recio/
 
 ## Stack
 
-- **Astro** (HTML estático, 0 KB de JS de framework) + **TypeScript** estrito
-- **CSS nativo** com tokens e `@layer` (sem Tailwind e sem bibliotecas de animação)
-- **Inter** variável, hospedada localmente
-- Vitest (testes), Biome (lint e formatação), GitHub Actions (CI e deploy)
+- **Astro** (static HTML, 0 KB of framework JS) + strict **TypeScript**
+- **Native CSS** with tokens and `@layer` (no Tailwind, no animation libraries)
+- **Inter** variable font, self-hosted
+- Vitest (tests), Biome (lint and formatting), GitHub Actions (CI and deploy)
 
-As decisões e o raciocínio estão em [`docs/adr/0001-modernizacao-pagina-links.md`](docs/adr/0001-modernizacao-pagina-links.md).
+Decisions and reasoning are in [`docs/adr/0001-modernizacao-pagina-links.md`](docs/adr/0001-modernizacao-pagina-links.md) (Portuguese, translated when next touched).
 
-## Comandos
+## Commands
 
-| Comando | O que faz |
+| Command | What it does |
 |---|---|
-| `npm ci` | Instala as dependências do lockfile |
-| `npm run dev` | Servidor local (sem CSP, pois o Vite injeta código inline) |
-| `npm run build` | Gera `dist/` e roda `scripts/verify-dist.mjs` |
-| `npm run preview` | Serve o `dist/` como em produção (com CSP) |
-| `npm test` | Testes unitários |
+| `npm ci` | Installs dependencies from the lockfile |
+| `npm run dev` | Local server (no CSP, because Vite injects inline code) |
+| `npm run build` | Generates `dist/` and runs `scripts/verify-dist.mjs` |
+| `npm run preview` | Serves `dist/` as in production (with CSP) |
+| `npm test` | Unit tests |
 | `npm run lint` / `npm run format` | Biome |
-| `npm run check` | Tipos (`astro check`) |
-| `npm run verify` | Tudo acima, em sequência |
+| `npm run check` | Types (`astro check`) |
+| `npm run verify` | All of the above, in sequence |
 
-Requer Node 22 ou superior.
+Requires Node 22 or later.
 
-## Estrutura
+## Structure
 
 ```
 src/
-├── data/        # links e perfil (fonte única, tipada)
-├── i18n/        # dicionários pt-BR e en
-├── lib/         # funções puras e testadas (validação de links, CSP, ponteiro)
-├── components/  # Hero, LinkCard, LanguageSwitch, EarthBackdrop, Profile
-├── layouts/     # Base (head, CSP, meta tags)
-├── pages/       # [...locale].astro gera "/" (pt-BR) e "/en/"
-├── scripts/     # interações opcionais (spotlight, tilt, globo 3D)
-└── styles/      # tokens.css, base.css e components/*.css
-scripts/verify-dist.mjs   # guarda de segurança pós-build
-tests/unit/               # Vitest
-skills/                   # skills para agentes de IA (design, segurança, arquitetura, ADR)
+├── data/        # links, profile and timeline (single typed source)
+├── i18n/        # pt-BR and en dictionaries (site copy)
+├── lib/         # pure, tested functions (link validation, CSP, pointer, sun, sequences...)
+├── components/  # Hero, LinkCard, LanguageSwitch, EarthBackdrop, Timeline, Profile
+├── layouts/     # Base (head, CSP, meta tags, Open Graph)
+├── pages/       # [...locale].astro builds "/" (pt-BR) and "/en/"; 404.astro
+├── scripts/     # optional interactions (spotlight, tilt, 3D globe, easter eggs)
+└── styles/      # tokens.css, base.css and components/*.css
+scripts/verify-dist.mjs        # post-build security guard
+scripts/generate-og-image.mjs  # builds the 1200x630 share preview
+tests/unit/                    # Vitest
+skills/                        # skills for AI agents (design, security, architecture, ADR, git)
 ```
 
-## Como editar
+## How to edit
 
-- **Novo link:** adicione em `src/data/links.ts` e o texto em `src/i18n/*.ts`. O build falha se o host não estiver na allowlist (`AllowedHost` em `src/data/types.ts`) ou se o protocolo não for `https`.
-- **Novo idioma:** crie um dicionário em `src/i18n/`, registre-o em `src/i18n/index.ts` e inclua o código em `Locale`.
-- **Cores e espaçamentos:** somente em `src/styles/tokens.css`.
+- **New link:** add it to `src/data/links.ts` and its copy to `src/i18n/*.ts`. The build fails if the host is not in the allowlist (`AllowedHost` in `src/data/types.ts`) or the protocol is not `https`.
+- **New language:** create a dictionary in `src/i18n/`, register it in `src/i18n/index.ts` and add its code to `Locale`.
+- **Colors and spacing:** only in `src/styles/tokens.css`.
+- **Git and docs conventions:** see [`skills/git-workflow/SKILL.md`](skills/git-workflow/SKILL.md). Branches are `type/topic-topic`, commits are `Type: verb object`, and PRs, README and docs are written in English.
 
 ## Deploy
 
-O workflow `deploy.yml` publica no GitHub Pages a cada push na `main`. Em **Settings → Pages**, a fonte precisa estar em **GitHub Actions**.
+The `deploy.yml` workflow publishes to GitHub Pages on every push to `main`. Under **Settings → Pages**, the source must be **GitHub Actions**.
 
-## Globo 3D
+## 3D globe
 
-A Terra é um globo three.js (shader próprio: dia/noite com crepúsculo rosa, nuvens, atmosfera roxa, estrelas). Arraste para girar (com inércia); ele volta devagar para a vista do Brasil.
+The Earth is a three.js globe with a custom shader: day and night with a pink twilight, clouds, a purple atmosphere and stars. Drag to spin it (with inertia); it slowly returns to the view over Brazil.
 
-- O three.js (~132 KB gzip) é um chunk **lazy**: só baixa se houver WebGL, depois da primeira pintura. Sem WebGL, com erro ou antes de carregar, aparece o poster estático (`public/media/earth-poster.*`).
-- Texturas em `public/textures/` (2k e 4k em WebP; 4k só em telas grandes/hidpi e sem `saveData`).
-- `prefers-reduced-motion`: globo parado (ainda dá para arrastar, sem inércia).
-- **Créditos das texturas:** vieram dos exemplos do repositório `vasturiano/three-globe` (MIT). A origem original das imagens (provavelmente NASA Blue/Black Marble) não foi confirmada: confirme a licença antes de divulgar, ou troque pelos mapas oficiais da NASA (domínio público).
+- Day and night follow the visitor's **real local time** (`src/lib/sun.ts`): at night in Brazil the globe opens dark, with the city lights on.
+- Glowing, pulsing markers for **Brasília** and **Santander** (`src/lib/markers.ts`). Hover or tap to see the name.
+- three.js (~132 KB gzip) is a **lazy** chunk: it is only downloaded when WebGL is available, after the first paint. Without WebGL, on error, or before it loads, a static poster is shown (`public/media/earth-poster.*`).
+- Textures live in `public/textures/` (2k and 4k WebP; 4k only on large or hi-dpi screens without `saveData`).
+- `prefers-reduced-motion`: the globe stays still (dragging still works, without inertia).
+- **Texture credits:** they come from the examples of the `vasturiano/three-globe` repository (MIT). The original source of the images (probably NASA Blue/Black Marble) was not confirmed: confirm the license before promoting the page, or swap them for the official NASA maps (public domain).
 
-## Acessibilidade e segurança
+## Career timeline
 
-- Respeita `prefers-reduced-motion` (globo parado, sem tilt nem animações) e usa hover só com mouse.
-- Foco por teclado visível; a página funciona sem JavaScript.
-- Detalhes em [`SECURITY.md`](SECURITY.md).
+- `src/data/timeline.ts` defines the order and the technologies; the copy (period, role, summary, highlight) lives in `timeline.items` of each dictionary in `src/i18n/`.
+- Items "light up" as you scroll (like cities on the night side of the globe). Without JavaScript they all show lit.
+- Content source: LinkedIn.
+
+## Share preview and 404
+
+- `public/media/og-image.jpg` (1200x630) is generated by `node scripts/generate-og-image.mjs` and committed. Re-run it only when the visual changes.
+- `src/layouts/Base.astro` emits the Open Graph and Twitter card tags (large image, size, alt text, locale alternates). The build checks them.
+- `src/pages/404.astro` is the themed 404 page ("Houston, we lost the signal"). GitHub Pages serves it for any unknown address.
+
+## Easter eggs
+
+Everything is decorative, costs nothing to visitors who do not look for it, and respects `prefers-reduced-motion` (only text messages appear). Code in `src/scripts/easter-eggs.ts`, copy under `easter` in the dictionaries.
+
+| How to trigger | What happens |
+|---|---|
+| Konami code (↑↑↓↓←→←→ B A), or press and hold the name (mobile) | Turbo globe and a giant rocket |
+| Tap the globe repeatedly | Each tap spins it faster; on the 10th the planet gets "dizzy" |
+| Type `foguete` / `rocket` | Rocket rain |
+| Type `lua` / `moon` | Moon mode (toggles) |
+| Type `esther` | The name glows |
+| Type `estrela` / `wish` | A clickable shooting star (make a wish); it also shows up on its own in 1 of 20 visits |
+| Click the "ER" monogram 5 times | Theme change: aurora → sunset → terminal |
+| Hidden constellation (top-left corner) | Connect the 5 stars in the right order to draw a five-pointed star |
+| Move the mouse | Stardust trail; the `S` key (after 1 s without typing) toggles it |
+| Open the browser console | A note with the LinkedIn link |
+| Greeting | A message based on the visitor's local time (once per session) |
+
+## Accessibility and security
+
+- Respects `prefers-reduced-motion` (still globe, no tilt or animations) and uses hover only with a mouse.
+- Visible keyboard focus; the page works without JavaScript.
+- Details in [`SECURITY.md`](SECURITY.md).
