@@ -99,19 +99,25 @@ export function starBurstAt(x: number, y: number, count = 14): void {
   }
 }
 
-/** Liga/desliga a lua grande no canto da tela. Devolve o novo estado. */
-export function toggleMoon(): boolean {
+let moonTimer = 0;
+
+/**
+ * Mostra a lua grande no canto da tela e o céu azulado por `durationMs`, como os outros efeitos.
+ * Chamar de novo enquanto ela está na tela reinicia o tempo (não empilha, não apaga).
+ */
+export function showMoon(durationMs: number): void {
   const html = document.documentElement;
-  const on = html.dataset.moon !== 'on';
-  if (on && !document.querySelector('.moon')) {
+  if (!document.querySelector('.moon')) {
     const moon = document.createElement('div');
     moon.className = 'moon';
     moon.setAttribute('aria-hidden', 'true');
     document.body.append(moon);
   }
-  if (on) html.dataset.moon = 'on';
-  else delete html.dataset.moon;
-  return on;
+  html.dataset.moon = 'on';
+  window.clearTimeout(moonTimer);
+  moonTimer = window.setTimeout(() => {
+    delete html.dataset.moon;
+  }, durationMs);
 }
 
 /** Faz o nome brilhar por alguns segundos. */
