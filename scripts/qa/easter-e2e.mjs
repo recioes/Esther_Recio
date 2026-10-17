@@ -34,14 +34,23 @@ const LOCALES = {
     board: 'Pistas',
     counter: 'Segredos descobertos',
     done: 'Obrigada',
+    finale: 'Você achou todos os segredos',
   },
-  en: { path: 'en/', lang: 'en', board: 'Clues', counter: 'Secrets found', done: 'Thanks' },
+  en: {
+    path: 'en/',
+    lang: 'en',
+    board: 'Clues',
+    counter: 'Secrets found',
+    done: 'Thanks',
+    finale: 'You found every secret',
+  },
   es: {
     path: 'es/',
     lang: 'es',
     board: 'Pistas',
     counter: 'Secretos descubiertos',
     done: 'Gracias',
+    finale: 'Encontraste todos los secretos',
   },
 };
 
@@ -96,6 +105,87 @@ async function boardMatchesProgress(page, label) {
 }
 
 const pendingOf = (s) => s.clues.filter((_egg, index) => s.items[index]?.done !== 'true');
+
+/** Estado do grande final (null se não está na tela). */
+const readFinale = (page) =>
+  page.eval(`(() => {
+    const root = document.querySelector('.finale');
+    if (!root) return null;
+    const card = root.querySelector('.finale__card').getBoundingClientRect();
+    const close = root.querySelector('.finale__close').getBoundingClientRect();
+    return {
+      title: root.querySelector('.finale__title')?.textContent ?? '',
+      announced: root.querySelector('[role="status"]')?.textContent ?? '',
+      canvas: Boolean(root.querySelector('canvas')),
+      card: { x: card.left + card.width / 2, y: card.top + card.height / 2, left: card.left, right: card.right, top: card.top, bottom: card.bottom },
+      close: Math.min(close.width, close.height),
+      // Área visível, sem a barra de rolagem (é nela que o cartão se centraliza).
+      vw: document.documentElement.clientWidth,
+      vh: document.documentElement.clientHeight,
+      boardOpen: document.querySelector('.egg-board__toggle')?.getAttribute('aria-expanded') === 'true',
+    };
+  })()`);
+
+async function waitForFinale(page, timeoutMs = 4000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (await readFinale(page)) {
+      // Mede o cartão já parado: espera as animações de entrada terminarem.
+      await page.eval(
+        `Promise.all(document.querySelector('.finale__card').getAnimations().map((a) => a.finished))`,
+      );
+      return readFinale(page);
+    }
+    await sleep(150);
+  }
+  return null;
+}
+
+/** A promessa do final: fogos (ou não, com reduzir movimento) e mensagem no centro, legível e fechável. */
+async function checkFinale(page, label, { title, motion = true }) {
+  await sleep(500);
+  const finale = await waitForFinale(page);
+  if (!check(Boolean(finale), `${label}: o grande final aparece ao achar o último segredo`)) {
+    return null;
+  }
+  check(finale.title.includes(title), `${label}: mensagem no idioma da página`, finale.title);
+  check(
+    Math.abs(finale.card.x - finale.vw / 2) < 2 &&
+      Math.abs(finale.card.y - finale.vh / 2) < finale.vh * 0.08,
+    `${label}: a mensagem fica no centro da tela`,
+    JSON.stringify(finale.card),
+  );
+  check(
+    finale.card.left >= 0 &&
+      finale.card.right <= finale.vw &&
+      finale.card.top >= 0 &&
+      finale.card.bottom <= finale.vh,
+    `${label}: a mensagem cabe inteira na tela`,
+    JSON.stringify(finale.card),
+  );
+  check(finale.close >= 44, `${label}: botão de fechar com alvo ≥ 44 px`, `${finale.close}px`);
+  check(finale.announced.includes(title), `${label}: leitores de tela anunciam a vitória`);
+  check(
+    finale.canvas === motion,
+    motion
+      ? `${label}: os fogos de artifício aparecem`
+      : `${label}: sem fogos com "reduzir movimento"`,
+  );
+  check(!finale.boardOpen, `${label}: o quadro de pistas não abre por cima do final`);
+  return finale;
+}
+
+const finaleGone = async (page) => (await readFinale(page)) === null;
+
+/** Espera o final sumir (saída animada de 0,4 s; sob CPU lenta pode levar mais). */
+async function waitFinaleGone(page, timeoutMs = 3000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (await finaleGone(page)) return true;
+    await sleep(100);
+  }
+  return false;
+}
 
 async function emptyGlobePoint(page) {
   return page.eval(`(() => {
@@ -194,6 +284,7 @@ async function desktopScenarios(browser, root, locale) {
 
   let previousPending = [];
   const found = [];
+  const expectedCount = ALL_EGGS.filter((id) => id !== 'dizzy' || globe).length;
   for (const egg of ALL_EGGS) {
     if (egg === 'dizzy' && !globe) continue;
     await ACTIONS[egg](page);
@@ -222,6 +313,13 @@ async function desktopScenarios(browser, root, locale) {
       `novas=${fresh}`,
     );
     await boardMatchesProgress(page, `${locale}/${egg}`);
+    if (found.length < expectedCount) {
+      await sleep(500);
+      check(
+        await finaleGone(page),
+        `${locale}/${egg}: o grande final não aparece antes do último segredo`,
+      );
+    }
     previousPending = pendingNow;
   }
 
@@ -249,14 +347,28 @@ async function desktopScenarios(browser, root, locale) {
   );
   const labels = await page.eval(`(() => ({
     label: document.querySelector('.egg-board__toggle .sr-only')?.textContent ?? '',
-    done: document.querySelector('.egg-board__done')?.textContent ?? '',
   }))()`);
   check(
     labels.label.includes(copy.counter) && labels.label.includes(copy.board),
     `rótulo do quadro em ${locale}`,
     labels.label,
   );
-  check(labels.done.includes(copy.done), `mensagem final em ${locale}`, labels.done);
+  check(
+    await page.eval(`!document.querySelector('.egg-board__done')`),
+    `${locale}: o quadro não mostra mais a mensagem final (ela virou o grande final)`,
+  );
+  await checkFinale(page, `${locale}/desktop`, { title: copy.finale });
+  await page.screenshot(join(SHOTS, `finale-${locale}-desktop.png`));
+  await sleep(6500);
+  check(
+    await page.eval(`!document.querySelector('.finale canvas')`),
+    `${locale}: o canvas dos fogos é removido quando o show termina`,
+  );
+  await page.key('Escape');
+  check(await waitFinaleGone(page), `${locale}: Esc fecha o grande final`);
+  await page.type('lua');
+  await sleep(1500);
+  check(await finaleGone(page), `${locale}: repetir um segredo não reabre o grande final`);
   await page.eval(
     `(() => { const t = document.querySelector('.egg-board__toggle'); if (t.getAttribute('aria-expanded') !== 'true') t.click(); })()`,
   );
@@ -273,6 +385,8 @@ async function desktopScenarios(browser, root, locale) {
     reloaded.found.length === final.found.length && reloaded.boardVisible,
     'recarregar a página mantém o progresso',
   );
+  await sleep(1500);
+  check(await finaleGone(page), 'recarregar não reabre o grande final');
   const otherLocale = locale === 'en' ? 'es' : 'en';
   await page.goto(root + LOCALES[otherLocale].path);
   const other = await readState(page);
@@ -433,6 +547,33 @@ async function mobileScenarios(browser, base, label, size) {
   if (globe) await ACTIONS.dizzy(page);
   await sleep(600);
   state = await readState(page);
+  if (globe) {
+    // Último segredo do celular: grande final no centro, fechado com um toque fora do cartão.
+    await checkFinale(page, `celular ${label}`, { title: LOCALES['pt-BR'].finale });
+    await page.screenshot(join(SHOTS, `finale-mobile-${label}.png`));
+    // Pior caso de propósito: tocar no véu bem em cima de um cartão de link fora do cartão do final.
+    const outside = await page.eval(`(() => {
+      const card = document.querySelector('.finale__card').getBoundingClientRect();
+      const links = [...document.querySelectorAll('.link-card')].map((el) => el.getBoundingClientRect());
+      const below = links.find((r) => r.top > card.bottom + 4 && r.bottom < innerHeight);
+      return below
+        ? { x: below.left + below.width / 2, y: below.top + below.height / 2 }
+        : { x: innerWidth / 2, y: Math.min(innerHeight - 8, card.bottom + 40) };
+    })()`);
+    const tabsBefore = await page.browser.pageCount();
+    const urlBefore = await page.eval('location.href');
+    await page.tap(outside.x, outside.y);
+    check(
+      await waitFinaleGone(page),
+      `celular ${label}: tocar fora do cartão fecha o grande final`,
+    );
+    await sleep(500);
+    check(
+      (await page.browser.pageCount()) === tabsBefore &&
+        (await page.eval('location.href')) === urlBefore,
+      `celular ${label}: o toque que fecha o final não aciona o link que está por baixo`,
+    );
+  }
   for (const egg of TOUCH_EGGS) {
     if (egg === 'dizzy' && !globe) continue;
     check(state.found.includes(egg), `${egg}: achado por toque`, `found=${state.found}`);
@@ -517,12 +658,57 @@ async function mobileScenarios(browser, base, label, size) {
   if (globe) {
     const done = await readState(page);
     check(
-      done.found.length === TOUCH_EGGS.length && done.items.at(-1)?.final === true,
-      'achou todos os segredos do celular: o quadro mostra a mensagem final',
+      done.found.length === TOUCH_EGGS.length && done.items.every((item) => item.done === 'true'),
+      'achou todos os segredos do celular: todas as pistas riscadas',
     );
   }
   await page.screenshot(join(SHOTS, `mobile-${label}.png`));
   await page.close();
+}
+
+/** Grande final com "reduzir movimento": só a mensagem, que fecha pelo botão e sozinha. */
+async function finaleReducedMotion(browser, root) {
+  console.log('\n── Grande final com "reduzir movimento" ──');
+  // Com reduzir movimento não há poeira estelar, então ela não conta no total.
+  const almostAll = ALL_EGGS.filter((id) => id !== 'moon' && id !== 'trail').join(',');
+  const open = async () => {
+    const page = await browser.newPage();
+    await page.emulate({ width: 1280, height: 800 });
+    await page.emulateMedia([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+    await page.goto(root);
+    await page.eval(
+      `sessionStorage.setItem('found-eggs', '${almostAll}'); sessionStorage.setItem('egg-clues', ''); location.reload();`,
+    );
+    await sleep(1500);
+    await page.type('lua');
+    return page;
+  };
+
+  const page = await open();
+  const finale = await checkFinale(page, 'reduzir movimento', {
+    title: LOCALES['pt-BR'].finale,
+    motion: false,
+  });
+  if (finale) {
+    await sleep(800);
+    await page.click(finale.card.x, finale.card.y);
+    await sleep(500);
+    check(!(await finaleGone(page)), 'clicar dentro do cartão não fecha o grande final');
+    const close = await page.box('.finale__close');
+    await page.click(close.x, close.y);
+    check(await waitFinaleGone(page), 'o botão × fecha o grande final');
+  }
+  check((await page.eval('window.__csp.length')) === 0, 'nenhuma violação de CSP no grande final');
+  await page.close();
+
+  const idle = await open();
+  const appeared = await waitForFinale(idle);
+  await sleep(10_500);
+  check(
+    Boolean(appeared) && (await finaleGone(idle)),
+    'o grande final aparece e se fecha sozinho depois de ~10 s',
+  );
+  await idle.close();
 }
 
 /**
@@ -672,7 +858,7 @@ async function boardWaitsForToasts(browser, root) {
 }
 
 const { server, url } = await serveDist(DIST);
-// --only=desktop,clues,wish,overlay,order,mobile roda só essas seções (padrão: todas).
+// --only=desktop,clues,wish,overlay,finale,order,mobile roda só essas seções (padrão: todas).
 const only = process.argv
   .find((arg) => arg.startsWith('--only='))
   ?.slice(7)
@@ -690,6 +876,7 @@ const SECTIONS = [
   ['clues', (browser) => clueTexts(browser, url)],
   ['wish', (browser) => wishPhrasings(browser, url)],
   ['overlay', (browser) => boardWaitsForToasts(browser, url)],
+  ['finale', (browser) => finaleReducedMotion(browser, url)],
   [
     'order',
     async (browser) => {

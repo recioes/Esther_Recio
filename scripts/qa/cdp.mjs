@@ -91,10 +91,26 @@ class Page {
     });
   }
 
+  /** Envia um comando; se o navegador não responder em 30 s, falha com o nome do comando (sem travar o QA). */
   send(method, params = {}) {
     const id = ++this.#id;
     this.#ws.send(JSON.stringify({ id, method, params }));
-    return new Promise((resolve, reject) => this.#pending.set(id, { resolve, reject }));
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.#pending.delete(id);
+        reject(new Error(`sem resposta do navegador em 30 s: ${method}`));
+      }, 30_000);
+      this.#pending.set(id, {
+        resolve: (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        reject: (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      });
+    });
   }
 
   #waitFor(method, timeoutMs = 15000) {
@@ -130,6 +146,11 @@ class Page {
       });
     }
     if (cpu > 1) await this.send('Emulation.setCPUThrottlingRate', { rate: cpu });
+  }
+
+  /** Preferências do sistema, como `prefers-reduced-motion: reduce`. */
+  emulateMedia(features) {
+    return this.send('Emulation.setEmulatedMedia', { features });
   }
 
   async goto(url) {
@@ -305,6 +326,11 @@ export async function launchBrowser({ port = 9333, extraArgs = [] } = {}) {
         ws.addEventListener('error', reject, { once: true });
       });
       return new Page(ws, target.id, browser);
+    },
+    /** Quantas abas existem (para flagrar um link aberto por engano). */
+    async pageCount() {
+      const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+      return targets.filter((target) => target.type === 'page').length;
     },
     async close() {
       child.kill();
