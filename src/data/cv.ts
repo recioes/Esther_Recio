@@ -74,7 +74,7 @@ export const CV_CONTACT: {
   /** Primeiro as informações de contato direto; depois os perfis (https, nos domínios já usados no site). */
   items: [
     { label: 'Brasília, DF' },
-    { label: 'esther.recio47@gmail.com', href: 'mailto:esther.recio47@gmail.com' },
+    { label: 'esther.recio47+cv@gmail.com', href: 'mailto:esther.recio47+cv@gmail.com' },
   ],
   links: [
     { label: 'linkedin.com/in/estherrecio', href: 'https://www.linkedin.com/in/estherrecio/' },
