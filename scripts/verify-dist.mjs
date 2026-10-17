@@ -67,6 +67,13 @@ const CHECKS = [
     failures: (html) => (/http-equiv=["']?Content-Security-Policy/i.test(html) ? [] : ['ausente']),
   },
   {
+    name: 'CSP exige Trusted Types',
+    failures: (html) =>
+      /require-trusted-types-for 'script'/.test(html) && /trusted-types 'none'/.test(html)
+        ? []
+        : ['ausente'],
+  },
+  {
     name: "CSP sem 'unsafe-inline' / 'unsafe-eval'",
     failures: (html) => (/unsafe-(inline|eval)/i.test(html) ? ['encontrado'] : []),
   },
@@ -157,6 +164,27 @@ if (files.length === 0) {
 }
 
 let failed = false;
+
+// Currículos: cada idioma precisa ter o PDF publicado, com exatamente uma página.
+// Nomes fixos de propósito: este script não importa TypeScript (roda em qualquer Node >= 22).
+// tests/unit/cv.test.ts garante que src/data/cv.ts usa os mesmos nomes.
+const CV_FILES = ['pt-BR', 'en', 'es'].map((locale) => `Esther-Recio-CV-${locale}.pdf`);
+for (const fileName of CV_FILES) {
+  const label = `dist/cv/${fileName}`;
+  try {
+    const pdf = (await readFile(join(DIST_DIR, 'cv', fileName))).toString('latin1');
+    const pages = pdf.match(/\/Type\s*\/Page(?![a-zA-Z])/g)?.length ?? 0;
+    if (!pdf.startsWith('%PDF-') || pages !== 1) {
+      failed = true;
+      console.error(
+        `✗ ${label}: esperado um PDF de 1 página (encontrado: ${pages}). Rode npm run cv.`,
+      );
+    }
+  } catch {
+    failed = true;
+    console.error(`✗ ${label}: arquivo ausente. Rode npm run cv e versione o PDF.`);
+  }
+}
 
 const cssFiles = await listCssFiles(join(DIST_DIR, '_astro'));
 for (const file of cssFiles) {
