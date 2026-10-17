@@ -5,7 +5,9 @@ import '../styles/base.css';
 import '@fontsource-variable/inter/wght.css';
 import '../styles/components/sparkles.css';
 import '../styles/components/easter.css';
+import '../styles/components/print.css';
 import EarthBackdrop from '../components/EarthBackdrop.astro';
+import { CV } from '../data/cv';
 import { dictionaries, pagePath } from '../i18n';
 import type { Dictionary } from '../i18n/types';
 import { joinBase } from '../lib/base-path';
@@ -60,6 +62,18 @@ const OG_IMAGE_SIZE = { width: 1200, height: 630 } as const;
         ))
     }
     {!noindex && <link rel="alternate" hreflang="x-default" href={absolute('')} />}
+    {
+      !noindex && (
+        <link
+          rel="alternate"
+          type="application/pdf"
+          hreflang={dict.htmlLang}
+          title={dict.resume.label}
+          href={absolute(`cv/${CV[dict.locale].fileName}`)}
+        />
+      )
+    }
+    {!noindex && <link rel="sitemap" type="application/xml" href={absolute('sitemap.xml')} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Esther Recio" />
     <meta property="og:title" content={title} />

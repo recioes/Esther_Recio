@@ -48,6 +48,10 @@
     --reveal-order: 4;
   }
 
+  .page__links > li:nth-child(4) {
+    --reveal-order: 5;
+  }
+
   @keyframes rise {
     from {
       opacity: 0;
@@ -104,17 +108,25 @@
 @layer components {
   /* Convite para rolar até a trajetória. Fica clicável mesmo com .page sem ponteiro. */
   .page__cue {
-    --reveal-order: 5;
+    --reveal-order: 6;
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    min-height: 2.75rem;
-    padding: var(--space-2) var(--space-4);
+    min-height: 3rem;
+    padding: var(--space-2) var(--space-5);
+    border: 1px solid rgb(var(--accent2-rgb) / 0.55);
     border-radius: var(--radius-pill);
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
+    background: rgb(var(--accent-rgb) / 0.2);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    box-shadow: 0 10px 32px -14px rgb(var(--accent-rgb) / 0.8);
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    font-weight: 600;
     pointer-events: auto;
-    transition: color var(--dur-med) var(--ease-out);
+    transition:
+      background var(--dur-med) var(--ease-out),
+      border-color var(--dur-med) var(--ease-out);
   }
 
   .page__cue svg {
@@ -123,7 +135,8 @@
 
   @media (hover: hover) and (pointer: fine) {
     .page__cue:hover {
-      color: var(--color-text);
+      border-color: rgb(var(--accent2-rgb) / 0.85);
+      background: rgb(var(--accent-rgb) / 0.34);
     }
   }
 

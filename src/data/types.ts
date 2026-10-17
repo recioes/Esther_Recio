@@ -7,7 +7,7 @@ export type AllowedHost = 'www.linkedin.com' | 'github.com' | 'lattes.cnpq.br';
 
 export type LinkId = 'linkedin' | 'github' | 'lattes';
 
-export type IconName = 'briefcase' | 'code' | 'book' | 'arrow';
+export type IconName = 'briefcase' | 'code' | 'book' | 'arrow' | 'file' | 'download';
 
 export interface ProfileLink {
   readonly id: LinkId;
@@ -41,6 +41,15 @@ export interface TimelineEntry {
   readonly end?: YearMonth;
   readonly current?: boolean;
   readonly tags?: readonly string[];
+}
+
+export type ProjectId = 'ihaircare';
+
+export interface ProjectEntry {
+  readonly id: ProjectId;
+  /** Repositório público no GitHub (o host é conferido nos testes). */
+  readonly href: HttpsUrl;
+  readonly tags: readonly string[];
 }
 
 export type LanguageId = 'pt' | 'es' | 'en';

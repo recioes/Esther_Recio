@@ -10,6 +10,8 @@
     "dev": "astro dev",
     "build": "astro build && node scripts/verify-dist.mjs",
     "preview": "astro preview",
+    "cv": "node scripts/build-cv.mjs",
+    "qa": "node scripts/qa/easter-e2e.mjs",
     "check": "astro check",
     "test": "vitest run",
     "lint": "biome check .",

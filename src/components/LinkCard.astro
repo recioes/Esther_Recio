@@ -1,28 +1,42 @@
 ---
 import '../styles/components/link-card.css';
-import type { ProfileLink } from '../data/types';
+import type { IconName } from '../data/types';
 import type { LinkCopy } from '../i18n/types';
 import Icon from './Icon.astro';
 
 interface Props {
-  readonly link: ProfileLink;
+  readonly href: string;
+  readonly icon: IconName;
   readonly copy: LinkCopy;
-  readonly newTabHint: string;
+  /** Texto lido por leitores de tela depois do rótulo (ex.: "abre em nova aba"). */
+  readonly hint: string;
+  /** Nome do arquivo: o cartão baixa o destino (mesma origem) em vez de abrir uma aba. */
+  readonly download?: string;
+  /** Cartão em destaque (o currículo). */
+  readonly featured?: boolean;
 }
 
-const { link, copy, newTabHint } = Astro.props;
+const { href, icon, copy, hint, download, featured = false } = Astro.props;
+const external = download === undefined;
 ---
 
-<a class="link-card" data-spotlight href={link.href} target="_blank" rel="noopener noreferrer">
+<a
+  class:list={['link-card', { 'link-card--featured': featured }]}
+  data-spotlight
+  href={href}
+  download={download}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+>
   <span class="link-card__icon">
-    <Icon name={link.icon} />
+    <Icon name={icon} />
   </span>
   <span class="link-card__body">
     <span class="link-card__label">{copy.label}</span>
     <span class="link-card__description">{copy.description}</span>
   </span>
   <span class="link-card__arrow">
-    <Icon name="arrow" />
+    <Icon name={external ? 'arrow' : 'download'} />
   </span>
-  <span class="sr-only">({newTabHint})</span>
+  <span class="sr-only">({hint})</span>
 </a>

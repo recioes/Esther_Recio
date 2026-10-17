@@ -21,6 +21,11 @@ export const en: Dictionary = {
     github: { label: 'GitHub', description: 'Code and projects' },
     lattes: { label: 'Lattes', description: 'Academic résumé' },
   },
+  resume: {
+    label: 'Résumé',
+    description: 'Download as PDF (1 page)',
+    downloadHint: 'downloads a PDF file',
+  },
   about: {
     title: 'About',
     lead: 'Backend developer with one foot in business and the other in code.',
@@ -158,6 +163,18 @@ export const en: Dictionary = {
       },
     },
   },
+  projects: {
+    title: 'Project',
+    intro: 'A personal project in C#, open on GitHub.',
+    allLabel: 'See all repositories',
+    items: {
+      ihaircare: {
+        name: 'iHairCare Backend API',
+        summary:
+          'RESTful API to manage hair-treatment schedules (create, update, list and delete), backed by MongoDB. Clean layered architecture (API, Core and Infra), SOLID principles, Swagger documentation and the connection string kept out of the code, in an environment variable.',
+      },
+    },
+  },
   academic: {
     title: 'Academic activities',
     intro: 'Research, teaching support and event organizing during my undergraduate years at UnB.',
@@ -219,6 +236,23 @@ export const en: Dictionary = {
       brasilia: { title: 'Brasília', detail: 'Brazil · UnB and UniCEUB' },
       santander: { title: 'Santander', detail: 'Spain · where I learned to read and write' },
     },
+    boardTitle: 'Clues',
+    hints: {
+      turbo:
+        'A legendary 80s video-game code makes this planet take off. On a phone, maybe my name knows something.',
+      rain: 'Type the name of what climbs to space with fire in its tail, and watch what falls from the sky.',
+      moon: 'When the sky is empty, type the name of our companion of the night.',
+      name: 'My name is also a password. Type it.',
+      wish: 'When something streaks across the sky, everyone makes a request. Summon one by typing what it is.',
+      theme: 'The monogram up top hides more than one color. Keep poking it.',
+      constellation:
+        'In a corner of the sky, five little dots wait for someone who can draw them in one stroke.',
+      dizzy: 'The Earth does not like being poked many times in a row.',
+      trail:
+        'The stardust that follows your mouse obeys one key. Clue: it is the first letter of “stardust”.',
+    },
+    counterLabel: 'Secrets found',
+    hintsDone: 'You found every secret that comes with a clue. Thanks for exploring 💜',
     consoleHello: 'Curious, huh? Nice that you opened the console 👀',
     consoleCta: 'Let’s talk →',
   },
