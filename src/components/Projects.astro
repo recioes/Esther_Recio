@@ -1,0 +1,50 @@
+---
+import '../styles/components/sections.css';
+import '../styles/components/timeline.css';
+import { GITHUB_URL } from '../data/links';
+import { PROJECTS } from '../data/projects';
+import type { Dictionary } from '../i18n/types';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const copy = dict.projects;
+---
+
+<section class="section" id="projetos" aria-labelledby="projects-title">
+  <header class="section__header">
+    <h2 class="section__title" id="projects-title">{copy.title}</h2>
+    <p class="section__intro">{copy.intro}</p>
+  </header>
+  <ul class="project-list">
+    {
+      PROJECTS.map((project) => {
+        const item = copy.items[project.id];
+        return (
+          <li>
+            <a
+              class="panel project"
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h3 class="project__name">{item.name}</h3>
+              <p class="project__summary">{item.summary}</p>
+              <ul class="timeline__tags">
+                {project.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+              <span class="sr-only">({dict.newTabHint})</span>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+  <p class="section__note">
+    <a class="text-link" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+      {copy.allLabel} →<span class="sr-only"> ({dict.newTabHint})</span>
+    </a>
+  </p>
+</section>

@@ -24,7 +24,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci # .npmrc: ignore-scripts=true
+      - run: npm audit signatures # assinaturas do registro e proveniência dos pacotes
       - run: npm run lint
       - run: npm run check
       - run: npm test

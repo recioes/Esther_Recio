@@ -20,6 +20,11 @@ export const ptBR: Dictionary = {
     github: { label: 'GitHub', description: 'Código e projetos' },
     lattes: { label: 'Lattes', description: 'Currículo acadêmico' },
   },
+  resume: {
+    label: 'Currículo',
+    description: 'Baixar em PDF (1 página)',
+    downloadHint: 'baixa um arquivo PDF',
+  },
   about: {
     title: 'Sobre',
     lead: 'Backend developer com um pé nos negócios e outro no código.',
@@ -157,6 +162,18 @@ export const ptBR: Dictionary = {
       },
     },
   },
+  projects: {
+    title: 'Projeto',
+    intro: 'Projeto pessoal em C#, aberto no GitHub.',
+    allLabel: 'Ver todos os repositórios',
+    items: {
+      ihaircare: {
+        name: 'iHairCare Backend API',
+        summary:
+          'API RESTful para gerenciar cronogramas de tratamentos capilares (criar, atualizar, listar e excluir), com MongoDB. Arquitetura limpa em camadas (API, Core e Infra), princípios SOLID, documentação no Swagger e string de conexão fora do código, em variável de ambiente.',
+      },
+    },
+  },
   academic: {
     title: 'Atividades acadêmicas',
     intro: 'Pesquisa, apoio ao ensino e organização de eventos durante a graduação na UnB.',
@@ -217,6 +234,27 @@ export const ptBR: Dictionary = {
     markers: {
       brasilia: { title: 'Brasília', detail: 'Brasil · UnB e UniCEUB' },
       santander: { title: 'Santander', detail: 'Espanha · onde fui alfabetizada' },
+    },
+    boardTitle: 'Pistas',
+    hints: {
+      turbo:
+        'Um código lendário dos videogames dos anos 80 faz este planeta disparar. No celular, talvez o meu nome saiba de algo.',
+      rain: 'Escreva o nome do que sobe ao espaço com fogo na cauda e veja o que cai do céu.',
+      moon: 'Quando o céu fica vazio, escreva o nome da nossa companheira das noites.',
+      name: 'Meu nome também é uma senha. Digite-o.',
+      wish: 'Quando algo risca o céu, todo mundo pede um desejo. Chame um escrevendo o que ele é.',
+      theme: 'O monograma lá em cima guarda mais de uma cor. Insista nele.',
+      constellation:
+        'Num canto do céu, cinco pontinhos esperam quem saiba desenhá-los num traço só.',
+      dizzy: 'A Terra não gosta de ser cutucada várias vezes seguidas.',
+      trail:
+        'A poeira de estrelas que segue o mouse obedece a uma tecla. Pista: é a inicial de “stardust”.',
+    },
+    counterLabel: 'Segredos descobertos',
+    finale: {
+      title: 'Você achou todos os segredos!',
+      text: 'Obrigada por explorar cada cantinho deste universo 💜',
+      close: 'Fechar',
     },
     consoleHello: 'Curioso(a), hein? Gostei de você ter aberto o console 👀',
     consoleCta: 'Vamos conversar →',

@@ -122,6 +122,51 @@
     line-height: 1.55;
   }
 
+  /* Projetos: cartões clicáveis (repositórios públicos). */
+  .project-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .project {
+    display: grid;
+    gap: var(--space-2);
+    transition: border-color var(--dur-med) var(--ease-out);
+  }
+
+  .project__name {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .project__summary {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .project:focus-visible {
+    border-color: rgb(var(--accent2-rgb) / 0.55);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .project:hover {
+      border-color: rgb(var(--accent2-rgb) / 0.55);
+    }
+  }
+
+  .text-link {
+    color: var(--color-pink-300);
+    font-weight: 500;
+  }
+
+  .text-link:hover,
+  .text-link:focus-visible {
+    text-decoration: underline;
+  }
+
   /* Publicação e atividades. */
   .pub {
     display: grid;

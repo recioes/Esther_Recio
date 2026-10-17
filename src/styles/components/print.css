@@ -1,0 +1,116 @@
+@layer reset, tokens, base, components, utilities;
+
+/* Impressão / "Salvar como PDF" da página: fundo branco, sem a Terra nem efeitos, conteúdo em fluxo. */
+@layer utilities {
+  @media print {
+    :root,
+    :root[data-theme] {
+      --color-bg: #ffffff;
+      --color-surface: transparent;
+      --color-border: #c9c9d1;
+      --color-text: #16161d;
+      --color-text-muted: #3d3d48;
+      --color-pink-300: #5b3ea8;
+      --color-lilac: #5b3ea8;
+      --gradient-title: none;
+      color-scheme: light;
+    }
+
+    body {
+      background: #ffffff;
+      color: #16161d;
+      font-size: 11pt;
+    }
+
+    .earth,
+    .language-switch,
+    .globe-hint,
+    .page__cue,
+    .toast,
+    .egg-board,
+    .finale,
+    .moon,
+    .fx-layer,
+    .constellation,
+    .shooting-star,
+    .hero__monogram,
+    .sparkle-layer,
+    .timeline__dot,
+    .timeline__list::before,
+    .timeline__legend,
+    .link-card--featured,
+    .link-card__arrow {
+      display: none;
+    }
+
+    .page {
+      min-height: 0;
+      padding: 0 0 var(--space-5);
+    }
+
+    .page,
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero__name {
+      background: none;
+      color: #16161d;
+    }
+
+    .hero__role {
+      background: none;
+      color: #5b3ea8;
+    }
+
+    .section__header,
+    .timeline__header,
+    .section__label {
+      break-after: avoid;
+    }
+
+    .section__title,
+    .timeline__title {
+      background: none;
+      color: #16161d;
+    }
+
+    .panel,
+    .timeline__card,
+    .link-card {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      box-shadow: none;
+      break-inside: avoid;
+    }
+
+    .timeline__item {
+      padding-left: 0;
+    }
+
+    .timeline-ready .timeline__item:not(.is-lit) .timeline__card {
+      opacity: 1;
+      transform: none;
+    }
+
+    .timeline {
+      padding-bottom: var(--space-5);
+    }
+
+    .section,
+    .timeline {
+      width: 100%;
+    }
+
+    /* Links externos mostram o endereço no papel. */
+    .link-card::after,
+    .project::after {
+      content: attr(href);
+      color: #5b3ea8;
+      font-size: 9pt;
+      overflow-wrap: anywhere;
+    }
+  }
+}

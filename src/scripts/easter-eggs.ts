@@ -3,6 +3,7 @@ import { DEFAULT_LOCALE, dictionaries } from '../i18n';
 import type { Dictionary } from '../i18n/types';
 import { tapBoostMultiplier } from '../lib/boost';
 import { type DayPeriod, dayPeriod, formatClock, shouldGreet } from '../lib/greeting';
+import { boardEntries, type EggId, parseEggList, reachableEggs, serializeEggs } from '../lib/hints';
 import {
   createSequenceMatcher,
   KONAMI_SEQUENCE,
@@ -15,6 +16,8 @@ import { isThemeId, nextTheme, THEME_GLOBE, type ThemeId } from '../lib/themes';
 import { printConsoleSignature } from './console-signature';
 import { mountConstellation } from './constellation-ui';
 import { createCursorTrail } from './cursor-trail';
+import { createEggBoard } from './egg-board';
+import { showFinale } from './finale';
 import { glowName, rocketRain, showMoon, spawnShootingStar, starBurstAt, turboRocket } from './fx';
 import type { GlobeHandle, MarkerUi } from './globe';
 import { createMarkerTooltip } from './globe-tooltip';
@@ -26,14 +29,17 @@ import { createToast } from './toast';
  * respeita "reduzir movimento" (nesse caso só aparecem os avisos de texto).
  *
  * - Konami (↑↑↓↓←→←→BA) ou segurar o nome: turbo no globo + foguete
- * - toques no globo: cada um gira mais rápido; no 10º o planeta fica "tonto"
+ * - toques no globo: cada um gira mais rápido; no 5º o planeta fica "tonto"
  * - digitar: foguete/rocket/cohete (chuva), lua/moon/luna (lua por 12 s), esther (nome brilha),
- *   estrela/estrella/wish/deseo (estrela cadente)
+ *   estrela/estrella/star/shootingstar/wish/desejo/deseo (estrela cadente)
  * - 5 cliques no monograma: troca de tema
  * - constelação escondida no canto superior esquerdo
  * - estrela cadente rara (1 em 20 visitas)
  * - rastro de poeira estelar no mouse (tecla S, parada por 1 s, liga/desliga)
  * - recado no console do navegador
+ * - achar um segredo pela primeira vez libera, no quadro do canto inferior direito, a pista
+ *   (charada) de outro; as pistas se acumulam ali e o contador mostra quantos já foram achados;
+ *   achar todos dispara o grande final (fogos de artifício e mensagem no centro da tela)
  */
 
 type ActionId = 'turbo' | 'rain' | 'moon' | 'name' | 'wish';
@@ -50,6 +56,9 @@ const WORDS: readonly (readonly [ActionId, string])[] = [
   ['wish', 'estrella'],
   ['wish', 'wish'],
   ['wish', 'deseo'],
+  ['wish', 'desejo'],
+  ['wish', 'star'],
+  ['wish', 'shootingstar'],
 ];
 
 const SEQUENCES: Readonly<Record<string, readonly string[]>> = {
@@ -60,7 +69,7 @@ const SEQUENCES: Readonly<Record<string, readonly string[]>> = {
 const TURBO_BOOST = 10;
 const TURBO_MS = 6000;
 const TAP_WINDOW_MS = 2000;
-const TAPS_UNTIL_DIZZY = 10;
+const TAPS_UNTIL_DIZZY = 5;
 const MONOGRAM_CLICKS_FOR_THEME = 5;
 const MONOGRAM_WINDOW_MS = 2500;
 const LONG_PRESS_MS = 900;
@@ -72,6 +81,10 @@ const MOON_MS = 12_000;
 const GREETING_DELAY_MS = 2400;
 const GREETING_CHECK_MS = 30_000;
 const GREETED_KEY = 'greeted-period';
+const FOUND_KEY = 'found-eggs';
+const CLUES_KEY = 'egg-clues';
+/** Deixa o efeito do último segredo aparecer antes do grande final. */
+const FINALE_DELAY_MS = 900;
 
 export interface EasterEnvironment {
   readonly reducedMotion: boolean;
@@ -117,6 +130,22 @@ function writeGreetedPeriod(period: DayPeriod): void {
   }
 }
 
+function readEggs(key: string): EggId[] {
+  try {
+    return parseEggList(sessionStorage.getItem(key));
+  } catch {
+    return [];
+  }
+}
+
+function writeEggs(key: string, eggs: Iterable<EggId>): void {
+  try {
+    sessionStorage.setItem(key, serializeEggs(eggs));
+  } catch {
+    // Armazenamento bloqueado: o estado em memória vale enquanto a página estiver aberta.
+  }
+}
+
 export function startEasterEggs(env: EasterEnvironment): EasterEggs {
   const dict = currentDictionary();
   const copy = dict.easter;
@@ -127,36 +156,88 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
   let theme: ThemeId = isThemeId(html.dataset.theme) ? html.dataset.theme : 'aurora';
   let turboUntil = 0;
 
+  // Segredos achados nesta aba e pistas já liberadas. Só a primeira descoberta de cada segredo
+  // libera uma pista nova (e abre o quadro); repetir um segredo já achado não faz nada aqui.
+  const found = new Set(readEggs(FOUND_KEY));
+  const reachable = reachableEggs(env.finePointer).filter((id) => id !== 'trail' || trail);
+  // Completa um estado salvo em que algum achado ficou sem entrada no quadro.
+  let clues = boardEntries(reachable, found, readEggs(CLUES_KEY), { withNewClue: false });
+  const board = createEggBoard(copy, () => toast.isVisible());
+  // Só conta o que este aparelho consegue achar (no toque, a estrela cadente rara não entra no total).
+  const renderBoard = (fresh: boolean): void =>
+    board.render({
+      found: new Set(reachable.filter((id) => found.has(id))),
+      clues,
+      total: reachable.length,
+      fresh,
+    });
+  renderBoard(false);
+
+  const discover = (id: EggId): void => {
+    if (found.has(id)) return;
+    found.add(id);
+    clues = boardEntries(reachable, found, clues);
+    writeEggs(FOUND_KEY, found);
+    writeEggs(CLUES_KEY, clues);
+    // Achou o último: em vez de abrir o quadro, o grande final (fogos e mensagem no centro).
+    const complete = reachable.every((egg) => found.has(egg));
+    renderBoard(!complete);
+    if (complete) {
+      window.setTimeout(
+        () =>
+          showFinale(copy.finale, {
+            reducedMotion: env.reducedMotion,
+            finePointer: env.finePointer,
+          }),
+        FINALE_DELAY_MS,
+      );
+    }
+  };
+
+  /** A estrela cadente (digitada ou rara): clicar nela faz o pedido. */
+  const spawnWish = (): void => {
+    const grant = (x: number, y: number): void => {
+      starBurstAt(x, y);
+      toast.show(copy.wish);
+      discover('wish');
+    };
+    if (env.reducedMotion) {
+      toast.show(copy.wish);
+      discover('wish');
+    } else spawnShootingStar(copy.shootingStarLabel, grant);
+  };
+
   const actions: Readonly<Record<ActionId, () => void>> = {
     turbo() {
       const now = performance.now();
       if (now < turboUntil) return;
       turboUntil = now + TURBO_MS;
       toast.show(copy.turbo);
+      discover('turbo');
       globe?.boost(TURBO_BOOST, TURBO_MS);
       if (!env.reducedMotion) turboRocket();
       env.name.celebrate();
     },
     rain() {
       toast.show(copy.rocketRain);
+      discover('rain');
       if (!env.reducedMotion) rocketRain();
     },
     moon() {
       toast.show(copy.moonOn);
+      discover('moon');
       showMoon(MOON_MS);
     },
     name() {
       toast.show(copy.nameGlow);
+      discover('name');
       glowName();
       env.name.celebrate();
     },
     wish() {
-      const grant = (x: number, y: number): void => {
-        starBurstAt(x, y);
-        toast.show(copy.wish);
-      };
-      if (env.reducedMotion) toast.show(copy.wish);
-      else spawnShootingStar(copy.shootingStarLabel, grant);
+      // Digitar a palavra já é achar o segredo; clicar na estrela é só o desejo.
+      discover('wish');
+      spawnWish();
     },
   };
 
@@ -172,7 +253,9 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
     const idle = event.timeStamp - lastKeyTime;
     lastKeyTime = event.timeStamp;
     if (token === 's' && trail && idle > TRAIL_KEY_IDLE_MS) {
+      // A poeira já vem ligada: ligar ou desligar pela tecla é o segredo.
       toast.show(trail.toggle() ? copy.trailOn : copy.trailOff);
+      discover('trail');
     }
 
     const matched = matcher.feed(token);
@@ -214,6 +297,7 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
     globe?.setPalette(THEME_GLOBE[next].glow, THEME_GLOBE[next].twilight);
     trail?.refreshColors();
     toast.show(copy.themes[next]);
+    discover('theme');
   };
   const monogramClicks = createTapCounter(MONOGRAM_WINDOW_MS);
   document.querySelector<HTMLElement>('.hero__monogram')?.addEventListener('click', () => {
@@ -226,11 +310,12 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
   mountConstellation((x, y) => {
     starBurstAt(x, y, 18);
     toast.show(copy.constellation);
+    discover('constellation');
   });
 
   // Estrela cadente rara.
   if (!env.reducedMotion && shouldSpawnShootingStar()) {
-    window.setTimeout(actions.wish, shootingStarDelayMs());
+    window.setTimeout(spawnWish, shootingStarDelayMs());
   }
 
   // Saudação pela hora local: uma vez por período do dia em cada sessão da aba. Não repete ao
@@ -263,6 +348,7 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
         globeTaps.reset();
         globe.dizzy(2800);
         toast.show(copy.dizzy);
+        discover('dizzy');
         return;
       }
       globe.boost(tapBoostMultiplier(count), 2500);

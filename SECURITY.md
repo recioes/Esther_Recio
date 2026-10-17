@@ -8,11 +8,13 @@ Use **Security → Report a vulnerability** neste repositório (relato privado d
 
 ## Controles aplicados
 
-- CSP restritiva via `<meta>` (sem `unsafe-inline`), validada a cada build por `scripts/verify-dist.mjs`.
-- Nenhum recurso de terceiros em runtime (fontes, vídeo e ícones são locais).
+- CSP restritiva via `<meta>` (sem `unsafe-inline`/`unsafe-eval`, sem origens externas) com **Trusted Types** (`require-trusted-types-for 'script'; trusted-types 'none'`), validada a cada build por `scripts/verify-dist.mjs` e, no navegador, pelo QA (`npm run qa`), que exige zero violações de CSP.
+- Nenhum recurso de terceiros em runtime (fontes, vídeo e ícones são locais); sem analytics nem cookies.
 - Links externos com `rel="noopener noreferrer"` e *allowlist* de hosts (`src/lib/links.ts`).
-- Dependabot (npm e Actions), `npm audit` e CodeQL no CI.
-- Workflows com `permissions` mínimas e Actions fixadas por SHA.
+- Cadeia de suprimentos: lockfile só do registro oficial com hash `sha512` (testado), `.npmrc` com `ignore-scripts=true`, `npm ci`, `npm audit` e `npm audit signatures` (assinaturas e proveniência) no CI, Dependabot com quarentena para versões recém-publicadas.
+- Workflows com `permissions` mínimas por job, Actions fixadas por SHA e `persist-credentials: false`; CodeQL semanal.
+- Dados pessoais só nos PDFs do currículo, com metadados limpos (sem o user agent de quem gerou).
+- Padrões e procedimento de revisão: [`skills/web-security-owasp/SKILL.md`](skills/web-security-owasp/SKILL.md).
 
 ## Limitações conhecidas
 

@@ -14,6 +14,11 @@ describe('CONTENT_SECURITY_POLICY', () => {
     expect(CONTENT_SECURITY_POLICY).not.toMatch(/https?:/);
   });
 
+  it('exige Trusted Types sem nenhuma política (barra injeção de HTML por string)', () => {
+    expect(CONTENT_SECURITY_POLICY).toContain("require-trusted-types-for 'script'");
+    expect(CONTENT_SECURITY_POLICY).toContain("trusted-types 'none'");
+  });
+
   it('bloqueia conexões, base e formulários', () => {
     expect(CONTENT_SECURITY_POLICY).toContain("connect-src 'none'");
     expect(CONTENT_SECURITY_POLICY).toContain("base-uri 'none'");

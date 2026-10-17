@@ -12,6 +12,10 @@ const DIRECTIVES: Readonly<Record<string, readonly string[]>> = {
   'connect-src': ["'none'"],
   'base-uri': ["'none'"],
   'form-action': ["'none'"],
+  // Trusted Types: o navegador recusa HTML/script vindo de string (innerHTML, eval de string
+  // etc.), mesmo que algum código novo ou dependência tente. Nenhuma política é permitida.
+  'require-trusted-types-for': ["'script'"],
+  'trusted-types': ["'none'"],
   'upgrade-insecure-requests': [],
 };
 

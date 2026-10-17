@@ -1,13 +1,16 @@
 ---
 import '../styles/components/page.css';
+import { CV } from '../data/cv';
 import { PROFILE_LINKS } from '../data/links';
 import { PROFILE } from '../data/profile';
 import type { Dictionary } from '../i18n/types';
+import { joinBase } from '../lib/base-path';
 import { assertValidLinks } from '../lib/links';
 import About from './About.astro';
 import Academic from './Academic.astro';
 import Hero from './Hero.astro';
 import Languages from './Languages.astro';
+import Projects from './Projects.astro';
 import LanguageSwitch from './LanguageSwitch.astro';
 import LinkCard from './LinkCard.astro';
 import Timeline from './Timeline.astro';
@@ -20,6 +23,10 @@ const { dict } = Astro.props;
 
 // Falha o build se algum destino sair da allowlist (https + host esperado).
 assertValidLinks(PROFILE_LINKS);
+
+// Currículo em PDF no idioma da página (gerado por `npm run cv`, servido de public/cv/).
+const resumeFile = CV[dict.locale].fileName;
+const resumeHref = joinBase(import.meta.env.BASE_URL, `cv/${resumeFile}`);
 ---
 
 <main class="stage">
@@ -28,13 +35,24 @@ assertValidLinks(PROFILE_LINKS);
     <Hero name={PROFILE.name} initials={PROFILE.initials} role={dict.role} />
     <nav class="page__nav" aria-label={dict.linksLabel}>
       <ul class="page__links">
+        <li class="reveal">
+          <LinkCard
+            href={resumeHref}
+            icon="file"
+            copy={dict.resume}
+            hint={dict.resume.downloadHint}
+            download={resumeFile}
+            featured
+          />
+        </li>
         {
           PROFILE_LINKS.map((link) => (
             <li class="reveal">
               <LinkCard
-                link={link}
+                href={link.href}
+                icon={link.icon}
                 copy={dict.links[link.id]}
-                newTabHint={dict.newTabHint}
+                hint={dict.newTabHint}
               />
             </li>
           ))
@@ -58,5 +76,6 @@ assertValidLinks(PROFILE_LINKS);
   <About dict={dict} />
   <Languages dict={dict} />
   <Timeline dict={dict} />
+  <Projects dict={dict} />
   <Academic dict={dict} />
 </main>

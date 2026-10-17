@@ -20,6 +20,11 @@ export const es: Dictionary = {
     github: { label: 'GitHub', description: 'Código y proyectos' },
     lattes: { label: 'Lattes', description: 'Currículum académico' },
   },
+  resume: {
+    label: 'Currículum',
+    description: 'Descargar en PDF (1 página)',
+    downloadHint: 'descarga un archivo PDF',
+  },
   about: {
     title: 'Sobre mí',
     lead: 'Desarrolladora backend con un pie en el negocio y otro en el código.',
@@ -157,6 +162,18 @@ export const es: Dictionary = {
       },
     },
   },
+  projects: {
+    title: 'Proyecto',
+    intro: 'Un proyecto personal en C#, abierto en GitHub.',
+    allLabel: 'Ver todos los repositorios',
+    items: {
+      ihaircare: {
+        name: 'iHairCare Backend API',
+        summary:
+          'API RESTful para gestionar cronogramas de tratamientos capilares (crear, actualizar, listar y eliminar), con MongoDB. Arquitectura limpia en capas (API, Core e Infra), principios SOLID, documentación en Swagger y la cadena de conexión fuera del código, en una variable de entorno.',
+      },
+    },
+  },
   academic: {
     title: 'Actividades académicas',
     intro:
@@ -220,6 +237,27 @@ export const es: Dictionary = {
     markers: {
       brasilia: { title: 'Brasilia', detail: 'Brasil · UnB y UniCEUB' },
       santander: { title: 'Santander', detail: 'España · donde aprendí a leer y escribir' },
+    },
+    boardTitle: 'Pistas',
+    hints: {
+      turbo:
+        'Un código legendario de los videojuegos de los 80 hace despegar este planeta. En el móvil, quizá mi nombre sepa algo.',
+      rain: 'Escribe el nombre de lo que sube al espacio con fuego en la cola y mira qué cae del cielo.',
+      moon: 'Cuando el cielo está vacío, escribe el nombre de nuestra compañera de las noches.',
+      name: 'Mi nombre también es una contraseña. Escríbelo.',
+      wish: 'Cuando algo cruza el cielo, todos piden algo. Llama a uno escribiendo lo que es.',
+      theme: 'El monograma de arriba guarda más de un color. Insiste en él.',
+      constellation:
+        'En una esquina del cielo, cinco puntitos esperan a quien sepa dibujarlos de un solo trazo.',
+      dizzy: 'A la Tierra no le gusta que la toquen muchas veces seguidas.',
+      trail:
+        'El polvo de estrellas que sigue al ratón obedece a una tecla. Pista: es la inicial de «stardust».',
+    },
+    counterLabel: 'Secretos descubiertos',
+    finale: {
+      title: '¡Encontraste todos los secretos!',
+      text: 'Gracias por explorar cada rincón de este universo 💜',
+      close: 'Cerrar',
     },
     consoleHello: '¿Curioso/a, eh? Me alegra que hayas abierto la consola 👀',
     consoleCta: 'Hablemos →',

@@ -10,6 +10,8 @@
     "dev": "astro dev",
     "build": "astro build && node scripts/verify-dist.mjs",
     "preview": "astro preview",
+    "cv": "node scripts/build-cv.mjs",
+    "qa": "node scripts/qa/easter-e2e.mjs",
     "check": "astro check",
     "test": "vitest run",
     "lint": "biome check .",
@@ -27,6 +29,6 @@
     "@types/three": "^0.186.0",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.4"
   }
 }

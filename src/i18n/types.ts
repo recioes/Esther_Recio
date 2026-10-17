@@ -4,15 +4,23 @@ import type {
   LanguageLevel,
   LinkId,
   Locale,
+  ProjectId,
   TimelineId,
 } from '../data/types';
 import type { DayPeriod } from '../lib/greeting';
+import type { EggId } from '../lib/hints';
 import type { MarkerId } from '../lib/markers';
 import type { ThemeId } from '../lib/themes';
 
 export interface LinkCopy {
   readonly label: string;
   readonly description: string;
+}
+
+/** Cartão de download do currículo (PDF no idioma da página). */
+export interface ResumeCopy extends LinkCopy {
+  /** Lido por leitores de tela depois do rótulo, no lugar de "abre em nova aba". */
+  readonly downloadHint: string;
 }
 
 /** Resumo profissional (id "sobre"). */
@@ -81,9 +89,29 @@ export interface AcademicCopy {
   readonly activities: Readonly<Record<ActivityId, ActivityCopy>>;
 }
 
+export interface ProjectCopy {
+  readonly name: string;
+  readonly summary: string;
+}
+
+export interface ProjectsCopy {
+  readonly title: string;
+  readonly intro: string;
+  readonly allLabel: string;
+  readonly items: Readonly<Record<ProjectId, ProjectCopy>>;
+}
+
 export interface MarkerCopy {
   readonly title: string;
   readonly detail: string;
+}
+
+/** Grande final: fogos de artifício e mensagem no centro da tela quando todos os segredos são achados. */
+export interface FinaleCopy {
+  readonly title: string;
+  readonly text: string;
+  /** Rótulo acessível do botão de fechar. */
+  readonly close: string;
 }
 
 /** Textos dos easter eggs. `{time}` em `greeting` é trocado pela hora local do visitante. */
@@ -101,6 +129,14 @@ export interface EasterCopy {
   readonly themes: Readonly<Record<ThemeId, string>>;
   readonly greeting: Readonly<Record<DayPeriod, string>>;
   readonly markers: Readonly<Record<MarkerId, MarkerCopy>>;
+  /** Nome do quadro de pistas (canto inferior direito). */
+  readonly boardTitle: string;
+  /** Uma pista (charada, sem dar a resposta) por segredo. */
+  readonly hints: Readonly<Record<EggId, string>>;
+  /** Rótulo (leitores de tela) do contador de segredos achados, ex.: "Segredos descobertos". */
+  readonly counterLabel: string;
+  /** Quando todos os segredos alcançáveis foram achados. */
+  readonly finale: FinaleCopy;
   /** Linhas impressas no console do navegador (o link do LinkedIn vem depois). */
   readonly consoleHello: string;
   readonly consoleCta: string;
@@ -128,9 +164,11 @@ export interface Dictionary {
   readonly newTabHint: string;
   readonly globeHint: string;
   readonly links: Readonly<Record<LinkId, LinkCopy>>;
+  readonly resume: ResumeCopy;
   readonly about: AboutCopy;
   readonly languages: LanguagesCopy;
   readonly timeline: TimelineSectionCopy;
+  readonly projects: ProjectsCopy;
   readonly academic: AcademicCopy;
   readonly easter: EasterCopy;
   readonly notFound: NotFoundCopy;
