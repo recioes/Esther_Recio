@@ -254,7 +254,11 @@ export const es: Dictionary = {
         'El polvo de estrellas que sigue al ratón obedece a una tecla. Pista: es la inicial de «stardust».',
     },
     counterLabel: 'Secretos descubiertos',
-    hintsDone: 'Descubriste todos los secretos que traen pista. Gracias por explorar 💜',
+    finale: {
+      title: '¡Encontraste todos los secretos!',
+      text: 'Gracias por explorar cada rincón de este universo 💜',
+      close: 'Cerrar',
+    },
     consoleHello: '¿Curioso/a, eh? Me alegra que hayas abierto la consola 👀',
     consoleCta: 'Hablemos →',
   },

@@ -106,6 +106,14 @@ export interface MarkerCopy {
   readonly detail: string;
 }
 
+/** Grande final: fogos de artifício e mensagem no centro da tela quando todos os segredos são achados. */
+export interface FinaleCopy {
+  readonly title: string;
+  readonly text: string;
+  /** Rótulo acessível do botão de fechar. */
+  readonly close: string;
+}
+
 /** Textos dos easter eggs. `{time}` em `greeting` é trocado pela hora local do visitante. */
 export interface EasterCopy {
   readonly turbo: string;
@@ -127,8 +135,8 @@ export interface EasterCopy {
   readonly hints: Readonly<Record<EggId, string>>;
   /** Rótulo (leitores de tela) do contador de segredos achados, ex.: "Segredos descobertos". */
   readonly counterLabel: string;
-  /** Quando já não resta nenhum segredo com pista. */
-  readonly hintsDone: string;
+  /** Quando todos os segredos alcançáveis foram achados. */
+  readonly finale: FinaleCopy;
   /** Linhas impressas no console do navegador (o link do LinkedIn vem depois). */
   readonly consoleHello: string;
   readonly consoleCta: string;

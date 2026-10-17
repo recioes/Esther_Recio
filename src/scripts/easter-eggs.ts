@@ -17,6 +17,7 @@ import { printConsoleSignature } from './console-signature';
 import { mountConstellation } from './constellation-ui';
 import { createCursorTrail } from './cursor-trail';
 import { createEggBoard } from './egg-board';
+import { showFinale } from './finale';
 import { glowName, rocketRain, showMoon, spawnShootingStar, starBurstAt, turboRocket } from './fx';
 import type { GlobeHandle, MarkerUi } from './globe';
 import { createMarkerTooltip } from './globe-tooltip';
@@ -37,7 +38,8 @@ import { createToast } from './toast';
  * - rastro de poeira estelar no mouse (tecla S, parada por 1 s, liga/desliga)
  * - recado no console do navegador
  * - achar um segredo pela primeira vez libera, no quadro do canto inferior direito, a pista
- *   (charada) de outro; as pistas se acumulam ali e o contador mostra quantos já foram achados
+ *   (charada) de outro; as pistas se acumulam ali e o contador mostra quantos já foram achados;
+ *   achar todos dispara o grande final (fogos de artifício e mensagem no centro da tela)
  */
 
 type ActionId = 'turbo' | 'rain' | 'moon' | 'name' | 'wish';
@@ -81,6 +83,8 @@ const GREETING_CHECK_MS = 30_000;
 const GREETED_KEY = 'greeted-period';
 const FOUND_KEY = 'found-eggs';
 const CLUES_KEY = 'egg-clues';
+/** Deixa o efeito do último segredo aparecer antes do grande final. */
+const FINALE_DELAY_MS = 900;
 
 export interface EasterEnvironment {
   readonly reducedMotion: boolean;
@@ -175,7 +179,19 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
     clues = boardEntries(reachable, found, clues);
     writeEggs(FOUND_KEY, found);
     writeEggs(CLUES_KEY, clues);
-    renderBoard(true);
+    // Achou o último: em vez de abrir o quadro, o grande final (fogos e mensagem no centro).
+    const complete = reachable.every((egg) => found.has(egg));
+    renderBoard(!complete);
+    if (complete) {
+      window.setTimeout(
+        () =>
+          showFinale(copy.finale, {
+            reducedMotion: env.reducedMotion,
+            finePointer: env.finePointer,
+          }),
+        FINALE_DELAY_MS,
+      );
+    }
   };
 
   /** A estrela cadente (digitada ou rara): clicar nela faz o pedido. */

@@ -95,12 +95,6 @@ export function createEggBoard(copy: EasterCopy, isToastVisible: () => boolean):
         item.textContent = copy.hints[egg];
         return item;
       });
-      if (found.size >= total) {
-        const done = document.createElement('li');
-        done.className = 'egg-board__done';
-        done.textContent = copy.hintsDone;
-        items.push(done);
-      }
       list.replaceChildren(...items);
 
       root.hidden = false;

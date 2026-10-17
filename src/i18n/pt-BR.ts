@@ -251,7 +251,11 @@ export const ptBR: Dictionary = {
         'A poeira de estrelas que segue o mouse obedece a uma tecla. Pista: é a inicial de “stardust”.',
     },
     counterLabel: 'Segredos descobertos',
-    hintsDone: 'Você descobriu todos os segredos que têm pista. Obrigada por explorar 💜',
+    finale: {
+      title: 'Você achou todos os segredos!',
+      text: 'Obrigada por explorar cada cantinho deste universo 💜',
+      close: 'Fechar',
+    },
     consoleHello: 'Curioso(a), hein? Gostei de você ter aberto o console 👀',
     consoleCta: 'Vamos conversar →',
   },

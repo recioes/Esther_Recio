@@ -121,6 +121,111 @@
     content: "💜";
   }
 
+  /* Grande final: fogos em canvas atrás de um cartão central. Acima de tudo, inclusive dos avisos. */
+  .finale {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: grid;
+    place-items: center;
+    padding: var(--space-4);
+    /* Véu escuro: a página recua, a mensagem e os fogos ganham destaque. */
+    background: radial-gradient(circle at 50% 50%, rgb(6 4 14 / 0.55), rgb(4 2 10 / 0.82));
+    /* O véu captura os toques: tocar nele só fecha o final, sem acionar links que estão por baixo. */
+    pointer-events: auto;
+    animation: finale-in var(--dur-slow) var(--ease-out) both;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  .finale.is-leaving {
+    opacity: 0;
+  }
+
+  .finale__canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .finale__card {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    width: min(100%, 30rem);
+    padding: var(--space-7) var(--space-6) var(--space-6);
+    border: 1px solid rgb(var(--accent2-rgb) / 0.55);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgb(var(--accent-rgb) / 0.35), transparent 70%),
+      rgb(14 10 26 / 0.95);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.04),
+      0 30px 80px -20px rgb(var(--accent-rgb) / 0.75),
+      0 0 60px rgb(var(--accent2-rgb) / 0.35);
+    text-align: center;
+    pointer-events: auto;
+    animation: finale-pop 700ms cubic-bezier(0.2, 1.4, 0.4, 1) 120ms both;
+  }
+
+  .finale__title {
+    margin: 0;
+    background: var(--gradient-title);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: clamp(1.75rem, 7vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+
+  .finale__text {
+    color: var(--color-text);
+    font-size: clamp(1rem, 3.6vw, 1.15rem);
+    line-height: 1.5;
+  }
+
+  .finale__close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .finale__close:hover,
+  .finale__close:focus-visible {
+    background: rgb(255 255 255 / 0.08);
+    color: var(--color-text);
+  }
+
+  @keyframes finale-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes finale-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.7) translateY(20px);
+    }
+  }
+
   @keyframes counter-bump {
     35% {
       border-color: rgb(var(--accent2-rgb) / 0.8);

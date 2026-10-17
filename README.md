@@ -119,6 +119,7 @@ Everything is decorative, costs nothing to visitors who do not look for it, and 
 | Move the mouse | Stardust trail; the `S` key (after 1 s without typing) toggles it |
 | Open the browser console | A note with the LinkedIn link |
 | Finding an egg for the first time | The bottom-right board ("✦ n/9") opens by itself with a new riddle-style clue for another, still-hidden egg, then folds away. Clues pile up there, one per first discovery, and click on the counter reopens them; found eggs get a check, including eggs found out of order before their clue showed up. Finding an egg again adds nothing. State lasts for the tab session; touch devices only get clues for eggs they can reach |
+| Finding every egg | Grand finale: the page dims, fireworks (canvas, lighter on touch screens) burst around a centered congratulations card in the page's language. Closes with ×, Escape, a tap on the dimmed area (which never activates links underneath) or on its own after ~10 s. With reduced motion, only the card appears |
 | Greeting | A message based on the visitor's local time, once per part of the day (dawn, morning, afternoon, evening) in each tab session: not on reload, but again when the part of the day changes. It waits until the tab is visible |
 
 ## Testing

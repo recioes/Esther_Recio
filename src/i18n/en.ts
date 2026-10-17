@@ -252,7 +252,11 @@ export const en: Dictionary = {
         'The stardust that follows your mouse obeys one key. Clue: it is the first letter of “stardust”.',
     },
     counterLabel: 'Secrets found',
-    hintsDone: 'You found every secret that comes with a clue. Thanks for exploring 💜',
+    finale: {
+      title: 'You found every secret!',
+      text: 'Thanks for exploring every corner of this universe 💜',
+      close: 'Close',
+    },
     consoleHello: 'Curious, huh? Nice that you opened the console 👀',
     consoleCta: 'Let’s talk →',
   },

@@ -75,7 +75,9 @@ describe.each(Object.values(dictionaries))('pistas em $locale', (dict) => {
   it('há uma pista, não vazia, para cada segredo, e o texto do quadro', () => {
     for (const id of EGG_IDS) expect(dict.easter.hints[id].length, id).toBeGreaterThan(10);
     expect(dict.easter.boardTitle.length).toBeGreaterThan(0);
-    expect(dict.easter.hintsDone.length).toBeGreaterThan(0);
+    expect(dict.easter.finale.title.length).toBeGreaterThan(0);
+    expect(dict.easter.finale.text.length).toBeGreaterThan(0);
+    expect(dict.easter.finale.close.length).toBeGreaterThan(0);
   });
 
   it('a pista não entrega a resposta de bandeja', () => {
