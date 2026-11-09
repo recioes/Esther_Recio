@@ -3,7 +3,9 @@ name: premium-dark-ui
 description: Use ao criar ou modernizar interfaces web com estética premium inspirada na Apple — tema escuro roxo/preto/rosa, vidro fosco, hover com spotlight, tipografia grande e motion acessível. Ideal para landing pages e páginas de links pessoais.
 ---
 
-# Premium Dark UI (roxo · preto · rosa)
+# Premium Dark UI
+
+> A paleta atual é a de espaço profundo definida em `src/styles/tokens.css` (cores de nebulosa: vermelho de hidrogênio, rosa, magenta, laranja e azul-petróleo). Os valores abaixo são históricos: use sempre os tokens.
 
 Objetivo: impacto visual alto com **simplicidade, desempenho e acessibilidade**. Menos elementos, melhor executados.
 
@@ -34,7 +36,9 @@ Objetivo: impacto visual alto com **simplicidade, desempenho e acessibilidade**.
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 150ms;
   --dur-med: 300ms;
-  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 }
 ```
 
@@ -42,7 +46,7 @@ Regra: **nenhuma cor, raio ou duração fora dos tokens.**
 
 ## Tipografia
 
-- Fonte: Inter variável **self-hosted** (nunca CDN de terceiros), fallback `system-ui`.
+- Fontes **self-hosted** (nunca CDN de terceiros): Bricolage Grotesque em títulos, Geist no texto, Geist Mono em etiquetas e rótulos; fallback `system-ui`.
 - Título: `font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 600–700; letter-spacing: -0.04em; line-height: 1.05`.
 - Subtítulo em `--color-text-muted`; no máximo uma palavra/trecho em `--gradient-brand` (`background-clip: text`).
 - Corpo ≥ 16 px; no máximo 2 pesos por tela.
