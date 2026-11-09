@@ -162,14 +162,19 @@ function revealProjectDetails(): void {
   for (const list of gsap.utils.toArray<HTMLElement>('.project__tools, .project__learnings')) {
     const items = Array.from(list.children);
     markAnimated(items);
-    gsap.from(items, {
-      opacity: 0,
-      x: -14,
-      duration: 0.6,
-      ease: EASE_OUT,
-      stagger: 0.06,
-      scrollTrigger: { trigger: list, start: 'top 90%', once: true },
-    });
+    // fromTo com valores finais explícitos: from() relê o estado atual a cada refresh e pode gravar opacidade 0.
+    gsap.fromTo(
+      items,
+      { opacity: 0, x: -14 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.6,
+        ease: EASE_OUT,
+        stagger: 0.06,
+        scrollTrigger: { trigger: list, start: 'top 90%', once: true },
+      },
+    );
   }
 }
 

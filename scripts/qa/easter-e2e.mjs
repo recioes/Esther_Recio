@@ -282,6 +282,21 @@ async function desktopScenarios(browser, root, locale) {
   const globe = await page.waitGlobe();
   if (!globe) warn('WebGL indisponível neste ambiente: o cenário da Terra tonta será pulado.');
 
+  await page.eval(
+    "document.querySelector('.project__tools').scrollIntoView({ block: 'center', behavior: 'instant' })",
+  );
+  await sleep(2500);
+  const hiddenTools = await page.eval(
+    "[...document.querySelectorAll('.project__tools li')].filter((li) => getComputedStyle(li).opacity !== '1').length",
+  );
+  check(
+    hiddenTools === 0,
+    'a lista de orquestração do projeto fica visível',
+    `ocultos=${hiddenTools}`,
+  );
+  await page.eval("window.scrollTo({ top: 0, behavior: 'instant' })");
+  await sleep(300);
+
   const before = await readState(page);
   check(!before.boardVisible, 'o quadro de pistas começa escondido (nenhum segredo achado)');
 
