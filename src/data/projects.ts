@@ -13,7 +13,7 @@ export const PROJECTS: readonly ProjectEntry[] = [
       'Claude Sonnet',
       'GPT Astra',
       'GPT Sol',
-      'DeepSeek Flash',
+      'DeepSeek V4 Flash',
       'DeepSeek V4 Pro',
     ],
     tags: [
