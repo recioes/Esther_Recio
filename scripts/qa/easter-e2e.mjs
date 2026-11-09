@@ -223,6 +223,9 @@ async function konami(page) {
 }
 
 async function doConstellation(page) {
+  // A constelação agora rola com o herói; o código konami deixa a página deslocada.
+  await page.eval("window.scrollTo({ top: 0, behavior: 'instant' })");
+  await sleep(300);
   for (const index of CONSTELLATION_ORDER) {
     const star = await boxOf(page, '.constellation__star', index);
     await page.pointer(star.x, star.y);
