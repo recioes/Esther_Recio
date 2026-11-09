@@ -9,9 +9,10 @@ export const en: Dictionary = {
   description:
     'Esther Recio, Backend Developer at Zenvia (C#, .NET, Kafka). Degrees in Business Administration and Systems Analysis and Development; native Portuguese and Spanish, fluent English.',
   ogImageAlt:
-    'Esther Recio, Backend Developer, next to a globe of the Earth on a purple background.',
+    'Esther Recio, Backend Developer, next to a globe of the Earth against a backdrop of nebulae.',
   role: 'Backend Developer',
   linksLabel: 'Professional profiles',
+  sectionNavLabel: 'On this page',
   languageSwitchLabel: 'Page language',
   languageNames: { 'pt-BR': 'Português', en: 'English', es: 'Español' },
   newTabHint: 'opens in a new tab',
@@ -164,10 +165,25 @@ export const en: Dictionary = {
     },
   },
   projects: {
-    title: 'Project',
-    intro: 'A personal project in C#, open on GitHub.',
+    title: 'Projects',
+    intro: 'From C# backends to orchestrating AI agents: what I have been building.',
     allLabel: 'See all repositories',
+    toolsLabel: 'Orchestration',
+    stackLabel: 'Stack',
+    learningsLabel: 'What I learned',
     items: {
+      jessicaRecio: {
+        eyebrow: 'AI orchestration',
+        name: 'Jéssica Recio · Sworn Translation',
+        summary:
+          'A trilingual website with its own visual identity for a sworn public translator, built by orchestrating AI agents with OmO: each model in the role where it performs best, with art direction, implementation and review kept separate.',
+        learnings: [
+          'A written brief and art direction are worth more than any one-off prompt: they are what keeps several models coherent.',
+          'Route by cost: cheaper models implement, the expensive ones are saved for direction and hard decisions.',
+          'An agent never signs off on its own work: tests, build verification and a manual production deploy are what make delivery reliable.',
+        ],
+        ctaLabel: 'Visit the site',
+      },
       ihaircare: {
         name: 'iHairCare Backend API',
         summary:

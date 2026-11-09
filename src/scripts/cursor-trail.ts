@@ -33,13 +33,17 @@ export function createCursorTrail(): CursorTrail | undefined {
   let lastTime = 0;
   let lastX = Number.NaN;
   let lastY = Number.NaN;
-  let colors = ['#ffffff', '#f9a8d4', '#c4b5fd'];
+  let colors = ['#ffffff', '#ffb68f', '#f5ddcf'];
 
   const readColors = (): string[] => {
     const style = getComputedStyle(document.documentElement);
     const pick = (name: string, fallback: string): string =>
       style.getPropertyValue(name).trim() || fallback;
-    return ['#ffffff', pick('--color-pink-300', '#f9a8d4'), pick('--color-purple-500', '#8b5cf6')];
+    return [
+      '#ffffff',
+      pick('--color-signal-300', '#ffb68f'),
+      pick('--color-accent-500', '#8b5cf6'),
+    ];
   };
 
   const resize = (): void => {

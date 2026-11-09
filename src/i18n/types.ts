@@ -92,12 +92,18 @@ export interface AcademicCopy {
 export interface ProjectCopy {
   readonly name: string;
   readonly summary: string;
+  readonly eyebrow?: string;
+  readonly learnings?: readonly string[];
+  readonly ctaLabel?: string;
 }
 
 export interface ProjectsCopy {
   readonly title: string;
   readonly intro: string;
   readonly allLabel: string;
+  readonly toolsLabel: string;
+  readonly stackLabel: string;
+  readonly learningsLabel: string;
   readonly items: Readonly<Record<ProjectId, ProjectCopy>>;
 }
 
@@ -159,6 +165,7 @@ export interface Dictionary {
   readonly ogImageAlt: string;
   readonly role: string;
   readonly linksLabel: string;
+  readonly sectionNavLabel: string;
   readonly languageSwitchLabel: string;
   readonly languageNames: Readonly<Record<Locale, string>>;
   readonly newTabHint: string;

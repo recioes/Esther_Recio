@@ -14,10 +14,10 @@ const CLOSE_GRACE_MS = 700;
 /** Densidade de pixels do canvas: menor em telas de toque, para pesar menos em celulares modestos. */
 const MAX_DPR = { fine: 2, touch: 1.5 } as const;
 const THEME_COLORS = [
-  '--color-pink-300',
-  '--color-purple-500',
-  '--color-lilac',
-  '--color-pink-500',
+  '--color-signal-300',
+  '--color-accent-500',
+  '--color-starlight',
+  '--color-signal-500',
 ];
 
 export interface FinaleOptions {

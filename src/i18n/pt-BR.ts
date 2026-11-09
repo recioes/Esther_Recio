@@ -8,9 +8,11 @@ export const ptBR: Dictionary = {
   title: 'Esther Recio — Backend Developer',
   description:
     'Esther Recio, Backend Developer na Zenvia (C#, .NET, Kafka). Formada em Administração e Análise e Desenvolvimento de Sistemas; português e espanhol nativos, inglês fluente.',
-  ogImageAlt: 'Esther Recio, Backend Developer, ao lado de um globo terrestre sobre fundo roxo.',
+  ogImageAlt:
+    'Esther Recio, Backend Developer, ao lado de um globo terrestre sobre um fundo de nebulosas.',
   role: 'Backend Developer',
   linksLabel: 'Perfis profissionais',
+  sectionNavLabel: 'Sumário da página',
   languageSwitchLabel: 'Idioma da página',
   languageNames: { 'pt-BR': 'Português', en: 'English', es: 'Español' },
   newTabHint: 'abre em nova aba',
@@ -163,10 +165,25 @@ export const ptBR: Dictionary = {
     },
   },
   projects: {
-    title: 'Projeto',
-    intro: 'Projeto pessoal em C#, aberto no GitHub.',
+    title: 'Projetos',
+    intro: 'Do backend em C# à orquestração de agentes de IA: o que ando construindo.',
     allLabel: 'Ver todos os repositórios',
+    toolsLabel: 'Orquestração',
+    stackLabel: 'Stack',
+    learningsLabel: 'Aprendizados',
     items: {
+      jessicaRecio: {
+        eyebrow: 'Orquestração de IA',
+        name: 'Jéssica Recio · Tradução juramentada',
+        summary:
+          'Site trilíngue com identidade própria para uma tradutora pública juramentada, construído orquestrando agentes de IA com OmO: cada modelo no papel em que rende mais, com direção de arte, implementação e revisão separadas.',
+        learnings: [
+          'Um briefing e uma direção de arte escritos valem mais do que qualquer prompt solto: é o que mantém vários modelos coerentes.',
+          'Rotear por custo: modelos econômicos implementam, os mais caros ficam para direção e decisões difíceis.',
+          'Agente não se autoaprova: testes, verificação do build e deploy manual para produção são o que garante a entrega.',
+        ],
+        ctaLabel: 'Visitar o site',
+      },
       ihaircare: {
         name: 'iHairCare Backend API',
         summary:

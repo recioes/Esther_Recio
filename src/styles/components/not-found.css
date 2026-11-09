@@ -1,24 +1,68 @@
 @layer reset, tokens, base, components, utilities;
 
 @layer components {
+  /* Mesma composição da home: texto à esquerda, globo livre à direita. */
   .lost {
     position: relative;
     z-index: 1;
     display: grid;
-    justify-items: center;
+    justify-items: start;
     align-content: center;
     gap: var(--space-3);
     min-height: 100dvh;
     padding: var(--space-8) var(--space-4);
-    text-align: center;
+    text-align: left;
+    text-shadow: 0 1px 14px rgb(10 7 16 / 0.9);
   }
 
-  /* O satélite à deriva: balança devagar de um lado para o outro. */
+  .lost .constellation {
+    top: var(--space-5);
+  }
+
+  @media (min-width: 1000px) {
+    .lost {
+      padding-inline: clamp(3rem, 9vw, 9rem);
+    }
+
+    .lost .constellation {
+      left: calc(clamp(3rem, 9vw, 9rem) + 28rem);
+    }
+  }
+
+  /* O satélite à deriva: balança devagar, com o sinal piscando sem resposta. */
   .lost__satellite {
-    font-size: clamp(3.5rem, 12vw, 6rem);
-    line-height: 1;
-    filter: drop-shadow(0 0 18px rgb(var(--accent-rgb) / 0.6));
+    width: clamp(5.5rem, 12vw, 8rem);
+    height: auto;
+    overflow: visible;
     animation: lost-drift 7s ease-in-out infinite alternate;
+  }
+
+  .lost__satellite-body {
+    fill: var(--color-starlight);
+  }
+
+  .lost__satellite-panel {
+    fill: var(--color-accent-700);
+    stroke: var(--color-signal-300);
+    stroke-width: 1.5;
+  }
+
+  .lost__satellite-line {
+    stroke: var(--color-starlight);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .lost__signal {
+    fill: none;
+    stroke: var(--color-ember);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    animation: lost-signal 2.4s ease-in-out infinite;
+  }
+
+  .lost__signal--far {
+    animation-delay: 0.35s;
   }
 
   .lost__code {
@@ -26,27 +70,29 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-size: clamp(4rem, 18vw, 8rem);
-    font-weight: 800;
-    letter-spacing: -0.06em;
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
     line-height: 1;
+    text-shadow: none;
   }
 
   .lost__title {
     margin: 0;
-    font-size: clamp(1.5rem, 5vw, 2.25rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
   }
 
   .lost__text {
-    max-width: 28rem;
+    max-width: 26rem;
     color: var(--color-text-muted);
   }
 
   .lost__text--en {
     font-size: 0.875rem;
-    opacity: 0.8;
   }
 
   .lost__back {
@@ -54,11 +100,15 @@
     place-items: center;
     min-height: 2.75rem;
     margin-top: var(--space-4);
-    padding: var(--space-2) var(--space-6);
-    border-radius: var(--radius-pill);
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-sm);
     background: var(--gradient-action);
     color: #ffffff;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-shadow: none;
     transition: transform var(--dur-med) var(--ease-out);
   }
 
@@ -70,11 +120,22 @@
 
   @keyframes lost-drift {
     from {
-      transform: translate(-1.75rem, 0.5rem) rotate(-14deg);
+      transform: translate(-0.5rem, 0.5rem) rotate(-14deg);
     }
 
     to {
-      transform: translate(1.75rem, -0.75rem) rotate(16deg);
+      transform: translate(1.5rem, -0.75rem) rotate(12deg);
+    }
+  }
+
+  @keyframes lost-signal {
+    0%,
+    100% {
+      opacity: 0.15;
+    }
+
+    50% {
+      opacity: 1;
     }
   }
 }

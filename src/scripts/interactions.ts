@@ -1,6 +1,7 @@
 import { pointerOffset, tiltAngles } from '../lib/pointer';
 import { startEasterEggs } from './easter-eggs';
 import { enhanceName } from './name-sparkles';
+import { observeSectionNav } from './section-nav';
 import { observeTimeline } from './timeline-reveal';
 
 /**
@@ -96,6 +97,13 @@ const easter = startEasterEggs({
   finePointer: hasFinePointer,
   name: nameEffects,
 });
+observeSectionNav();
+
+void import('./motion').then(({ startMotion }) => startMotion());
+
 whenIdle(() => {
   void startGlobe(easter);
+  void import('./cosmos').then(({ startCosmos }) =>
+    startCosmos(prefersReducedMotion || wantsSavedData()),
+  );
 });

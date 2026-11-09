@@ -13,6 +13,7 @@ import Languages from './Languages.astro';
 import Projects from './Projects.astro';
 import LanguageSwitch from './LanguageSwitch.astro';
 import LinkCard from './LinkCard.astro';
+import SectionNav from './SectionNav.astro';
 import Timeline from './Timeline.astro';
 
 interface Props {
@@ -32,7 +33,13 @@ const resumeHref = joinBase(import.meta.env.BASE_URL, `cv/${resumeFile}`);
 <main class="stage">
   <div class="page">
     <LanguageSwitch dict={dict} />
-    <Hero name={PROFILE.name} initials={PROFILE.initials} role={dict.role} />
+    <Hero
+      name={PROFILE.name}
+      initials={PROFILE.initials}
+      role={dict.role}
+      coordinates={PROFILE.coordinates}
+      lead={dict.about.lead}
+    />
     <nav class="page__nav" aria-label={dict.linksLabel}>
       <ul class="page__links">
         <li class="reveal">
@@ -73,6 +80,7 @@ const resumeHref = joinBase(import.meta.env.BASE_URL, `cv/${resumeFile}`);
     </a>
     <p class="globe-hint" aria-hidden="true">{dict.globeHint}</p>
   </div>
+  <SectionNav dict={dict} />
   <About dict={dict} />
   <Languages dict={dict} />
   <Timeline dict={dict} />

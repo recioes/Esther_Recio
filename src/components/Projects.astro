@@ -25,16 +25,42 @@ const copy = dict.projects;
         return (
           <li>
             <a
-              class="panel project"
+              class:list={['panel', 'project', { 'project--featured': project.featured }]}
               href={project.href}
               target="_blank"
               rel="noopener noreferrer"
+              data-spotlight
             >
+              {item.eyebrow && <p class="project__eyebrow">{item.eyebrow}</p>}
               <h3 class="project__name">{item.name}</h3>
               <p class="project__summary">{item.summary}</p>
-              <ul class="timeline__tags">
-                {project.tags.map((tag) => <li>{tag}</li>)}
-              </ul>
+              {project.tools && (
+                <div class="project__group">
+                  <p class="project__label">{copy.toolsLabel}</p>
+                  <ul class="timeline__tags project__tools">
+                    {project.tools.map((tool) => <li>{tool}</li>)}
+                  </ul>
+                </div>
+              )}
+              <div class="project__group">
+                {project.featured && <p class="project__label">{copy.stackLabel}</p>}
+                <ul class="timeline__tags">
+                  {project.tags.map((tag) => <li>{tag}</li>)}
+                </ul>
+              </div>
+              {item.learnings && (
+                <div class="project__group">
+                  <p class="project__label">{copy.learningsLabel}</p>
+                  <ul class="project__learnings">
+                    {item.learnings.map((learning) => <li>{learning}</li>)}
+                  </ul>
+                </div>
+              )}
+              {item.ctaLabel && (
+                <span class="project__cta" data-magnetic>
+                  {item.ctaLabel} <span aria-hidden="true">↗</span>
+                </span>
+              )}
               <span class="sr-only">({dict.newTabHint})</span>
             </a>
           </li>

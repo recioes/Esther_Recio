@@ -68,6 +68,9 @@ export interface GlobeHandle {
 }
 
 // Vista inicial centrada no Brasil; sol vindo da esquerda-frente (fixo, igual para todo visitante).
+/** Mesmo corte de earth.css: o globo fica em 72% da largura. */
+const WIDE_LAYOUT_PX = 1000;
+const GLOBE_SHIFT = 0.22;
 const INITIAL_VIEW = { lat: -12, lon: -50 } as const;
 const SUN_DIRECTION = new Vector3(-0.75, 0.38, 0.62).normalize();
 const HOVER_RADIUS_PX = 20;
@@ -87,9 +90,9 @@ const STAR_COUNT = 1100;
 const NO_TAP_SELECTOR = '[data-no-tap]';
 const INTERACTIVE_SELECTOR = 'a, button, input, select, textarea, summary, [data-no-drag]';
 
-const PURPLE = 0x8b5cf6;
-const PINK = 0xec4899;
-const LILAC = 0xc4b5fd;
+const ATMOSPHERE_GLOW = 0x56c7d9;
+const TWILIGHT = 0xff9a66;
+const RIM = 0x9fd8ea;
 
 async function loadTexture(
   loader: TextureLoader,
@@ -156,8 +159,8 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
         dayMap: { value: dayMap },
         nightMap: { value: nightMap },
         sunDirection: { value: SUN_DIRECTION },
-        twilightColor: { value: new Color(PINK) },
-        rimColor: { value: new Color(LILAC) },
+        twilightColor: { value: new Color(TWILIGHT) },
+        rimColor: { value: new Color(RIM) },
       },
     }),
   );
@@ -183,7 +186,7 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
       blending: AdditiveBlending,
       transparent: true,
       depthWrite: false,
-      uniforms: { glowColor: { value: new Color(PURPLE) } },
+      uniforms: { glowColor: { value: new Color(ATMOSPHERE_GLOW) } },
     }),
   );
   atmosphere.renderOrder = 1;
@@ -232,6 +235,9 @@ export async function mountGlobe(root: HTMLElement, options: GlobeOptions): Prom
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.position.z = cameraDistance(width, height, FOV_DEGREES);
+    // A projeção inclui o deslocamento, então marcadores e toques continuam alinhados.
+    const shift = width >= WIDE_LAYOUT_PX ? width * GLOBE_SHIFT : 0;
+    camera.setViewOffset(width, height, -shift, 0, width, height);
     camera.updateProjectionMatrix();
     radiansPerPixel = dragRadiansPerPixel(width, height);
     requestFrame();

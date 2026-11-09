@@ -56,7 +56,7 @@
     background: var(--color-surface);
     -webkit-backdrop-filter: blur(24px);
     backdrop-filter: blur(24px);
-    color: var(--color-lilac);
+    color: var(--color-starlight);
     font: inherit;
     font-size: 0.8125rem;
     font-variant-numeric: tabular-nums;
@@ -100,7 +100,7 @@
     content: "✦";
     position: absolute;
     left: 0;
-    color: var(--color-pink-300);
+    color: var(--color-signal-300);
   }
 
   .egg-board__list li[data-done="true"] {
@@ -378,13 +378,25 @@
 
   /* Constelação escondida (canto superior esquerdo). */
   .constellation {
-    position: fixed;
-    top: clamp(1rem, 6vmin, 3.5rem);
-    left: clamp(1rem, 5vmin, 3.5rem);
+    position: absolute;
+    top: 0;
     z-index: 2;
-    width: clamp(5.5rem, 15vmin, 9rem);
+    width: 7.5rem;
     aspect-ratio: 1;
     pointer-events: none;
+  }
+
+  /* Celular e tablet: ao lado do monograma, numa faixa que o herói reserva. Telas largas: à direita da coluna. */
+  @media (max-width: 999px) {
+    .constellation {
+      right: 0;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .constellation {
+      left: 28rem;
+    }
   }
 
   .constellation__lines {
@@ -450,7 +462,7 @@
   }
 
   .constellation.is-complete .constellation__star::before {
-    background: var(--color-pink-300);
+    background: var(--color-signal-300);
   }
 
   .constellation.is-complete .constellation__lines {

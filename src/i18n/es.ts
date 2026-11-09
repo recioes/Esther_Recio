@@ -8,9 +8,11 @@ export const es: Dictionary = {
   title: 'Esther Recio — Backend Developer',
   description:
     'Esther Recio, Backend Developer en Zenvia (C#, .NET, Kafka). Graduada en Administración y en Análisis y Desarrollo de Sistemas; portugués y español nativos, inglés fluido.',
-  ogImageAlt: 'Esther Recio, Backend Developer, junto a un globo terráqueo sobre un fondo morado.',
+  ogImageAlt:
+    'Esther Recio, Backend Developer, junto a un globo terráqueo sobre un fondo de nebulosas.',
   role: 'Backend Developer',
   linksLabel: 'Perfiles profesionales',
+  sectionNavLabel: 'Índice de la página',
   languageSwitchLabel: 'Idioma de la página',
   languageNames: { 'pt-BR': 'Português', en: 'English', es: 'Español' },
   newTabHint: 'se abre en una pestaña nueva',
@@ -163,10 +165,25 @@ export const es: Dictionary = {
     },
   },
   projects: {
-    title: 'Proyecto',
-    intro: 'Un proyecto personal en C#, abierto en GitHub.',
+    title: 'Proyectos',
+    intro: 'Del backend en C# a la orquestación de agentes de IA: lo que vengo construyendo.',
     allLabel: 'Ver todos los repositorios',
+    toolsLabel: 'Orquestación',
+    stackLabel: 'Stack',
+    learningsLabel: 'Aprendizajes',
     items: {
+      jessicaRecio: {
+        eyebrow: 'Orquestación de IA',
+        name: 'Jéssica Recio · Traducción jurada',
+        summary:
+          'Sitio web trilingüe con identidad propia para una traductora pública jurada, construido orquestando agentes de IA con OmO: cada modelo en el papel donde mejor rinde, con dirección de arte, implementación y revisión separadas.',
+        learnings: [
+          'Un briefing y una dirección de arte por escrito valen más que cualquier prompt suelto: son lo que mantiene coherentes a varios modelos.',
+          'Enrutar por coste: los modelos económicos implementan y los más caros se reservan para la dirección y las decisiones difíciles.',
+          'Un agente no se aprueba a sí mismo: las pruebas, la verificación del build y el despliegue manual a producción son lo que garantiza la entrega.',
+        ],
+        ctaLabel: 'Visitar el sitio',
+      },
       ihaircare: {
         name: 'iHairCare Backend API',
         summary:

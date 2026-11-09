@@ -1,0 +1,86 @@
+@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  /* Sticky dentro do <main>: só aparece depois da primeira tela, sem precisar de JS. */
+  .section-nav {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgb(10 7 16 / 0.88);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .section-nav__list {
+    display: flex;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0 var(--space-3);
+    overflow-x: auto;
+    list-style: none;
+    scrollbar-width: none;
+  }
+
+  .section-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 3rem;
+    padding: 0 var(--space-2);
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .section-nav__index {
+    color: var(--color-signal-300);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+  }
+
+  .section-nav__link[aria-current="true"] {
+    border-color: var(--color-signal-300);
+    color: var(--color-text);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .section-nav__link:hover {
+      color: var(--color-text);
+    }
+  }
+
+  /* Telas largas: trilho vertical ao lado do conteúdo, altura zero para não empurrar nada. */
+  @media (min-width: 1100px) {
+    .section-nav {
+      top: 50dvh;
+      height: 0;
+      /* Metade do trilho: sem isso ele apareceria no rodapé da primeira tela. */
+      margin-block: 9rem -9rem;
+      background: none;
+      border: 0;
+    }
+
+    .section-nav__list {
+      position: absolute;
+      right: var(--space-6);
+      flex-direction: column;
+      padding: 0;
+      overflow: visible;
+      transform: translateY(-50%);
+    }
+
+    .section-nav__link {
+      min-height: 2.75rem;
+      padding: 0 var(--space-3);
+      border-bottom: 0;
+      border-left: 2px solid var(--color-border);
+    }
+
+    .section-nav__link[aria-current="true"] {
+      border-color: var(--color-signal-300);
+    }
+  }
+}

@@ -1,0 +1,35 @@
+---
+import '../styles/components/section-nav.css';
+import type { Dictionary } from '../i18n/types';
+
+interface Props {
+  readonly dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+
+const sections = [
+  { id: 'sobre', label: dict.about.title },
+  { id: 'idiomas', label: dict.languages.title },
+  { id: 'trajetoria', label: dict.timeline.title },
+  { id: 'projetos', label: dict.projects.title },
+  { id: 'academico', label: dict.academic.title },
+];
+---
+
+<nav class="section-nav" aria-label={dict.sectionNavLabel} data-no-drag>
+  <ol class="section-nav__list" data-section-nav>
+    {
+      sections.map((section, index) => (
+        <li>
+          <a class="section-nav__link" href={`#${section.id}`}>
+            <span class="section-nav__index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span>{section.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>

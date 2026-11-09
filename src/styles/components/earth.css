@@ -23,6 +23,75 @@
     mask-image: radial-gradient(circle closest-side, #000 94%, transparent 100%);
   }
 
+  /* Órbita desenhada: a linha da frente cruza o globo, a de trás fica quase apagada. */
+  .earth__orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 128vmin;
+    aspect-ratio: 1;
+    overflow: visible;
+    transform: translate(-50%, -50%);
+  }
+
+  .earth__orbit-line {
+    stroke-width: 1.2;
+  }
+
+  .earth__orbit--back .earth__orbit-line {
+    stroke: rgb(var(--lilac-rgb) / 0.3);
+  }
+
+  .earth__orbit--front .earth__orbit-line {
+    stroke: rgb(var(--lilac-rgb) / 0.62);
+  }
+
+  .earth__satellite-body {
+    fill: var(--color-starlight);
+  }
+
+  .earth__satellite-panel {
+    fill: var(--color-accent-700);
+    stroke: var(--color-signal-300);
+    stroke-width: 1;
+  }
+
+  .earth__satellite-mast {
+    stroke: var(--color-starlight);
+    stroke-width: 1.4;
+  }
+
+  /* Pequeno e distante: mora num canto que o conteúdo não usa. */
+  .cosmos {
+    position: absolute;
+    width: 4rem;
+    aspect-ratio: 1;
+    opacity: 0.85;
+  }
+
+  .cosmos--hole {
+    right: 0.5rem;
+    bottom: 11dvh;
+  }
+
+  @media (min-width: 1000px) {
+    .cosmos--hole {
+      top: 60%;
+      right: auto;
+      bottom: auto;
+      left: 0.5vw;
+      width: clamp(4.5rem, 8vw, 7.5rem);
+    }
+  }
+
+  /* Em telas largas o globo vai para a direita (o canvas desloca a câmera, em globe.ts). */
+  @media (min-width: 1000px) {
+    .earth__stage,
+    .earth__orbit {
+      left: 72%;
+    }
+  }
+
   .earth__poster {
     width: 100%;
     height: 100%;
@@ -50,14 +119,16 @@
     opacity: 0;
   }
 
-  /* Aurora roxa/rosa + escurecimento para garantir contraste do texto. */
+  /* Nebulosa discreta + escurecimento para garantir contraste do texto. */
   .earth__veil {
     position: absolute;
     inset: 0;
     transition: opacity var(--dur-slow) var(--ease-out);
     background:
-      radial-gradient(ellipse at 15% 0%, rgb(var(--veil-a-rgb) / 0.34), transparent 55%),
-      radial-gradient(ellipse at 90% 100%, rgb(var(--veil-b-rgb) / 0.26), transparent 55%),
-      linear-gradient(180deg, rgb(7 6 11 / 0.42), rgb(7 6 11 / 0.74));
+      radial-gradient(ellipse at 6% 4%, rgb(var(--veil-a-rgb) / 0.36), transparent 44%),
+      radial-gradient(ellipse at 98% 104%, rgb(var(--veil-b-rgb) / 0.24), transparent 34%),
+      radial-gradient(ellipse at 42% 108%, rgb(var(--veil-c-rgb) / 0.2), transparent 46%),
+      radial-gradient(ellipse at 58% -8%, rgb(232 64 159 / 0.14), transparent 42%),
+      linear-gradient(180deg, rgb(10 7 16 / 0.14), rgb(10 7 16 / 0.5));
   }
 }

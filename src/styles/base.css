@@ -53,6 +53,11 @@
     html {
       scroll-behavior: smooth;
     }
+
+    /* O Lenis controla a rolagem: o smooth nativo brigaria com ele. */
+    html.lenis {
+      scroll-behavior: auto;
+    }
   }
 
   body {
@@ -67,12 +72,12 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-pink-300);
+    outline: 2px solid var(--color-signal-300);
     outline-offset: 3px;
   }
 
   ::selection {
-    background: var(--color-purple-700);
+    background: var(--color-accent-700);
     color: #fff;
   }
 }
