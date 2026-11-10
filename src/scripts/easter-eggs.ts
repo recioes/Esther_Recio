@@ -162,7 +162,7 @@ export function startEasterEggs(env: EasterEnvironment): EasterEggs {
   const reachable = reachableEggs(env.finePointer).filter((id) => id !== 'trail' || trail);
   // Completa um estado salvo em que algum achado ficou sem entrada no quadro.
   let clues = boardEntries(reachable, found, readEggs(CLUES_KEY), { withNewClue: false });
-  const board = createEggBoard(copy, () => toast.isVisible());
+  const board = createEggBoard(copy, () => toast.isVisible(), env.finePointer);
   // Só conta o que este aparelho consegue achar (no toque, a estrela cadente rara não entra no total).
   const renderBoard = (fresh: boolean): void =>
     board.render({

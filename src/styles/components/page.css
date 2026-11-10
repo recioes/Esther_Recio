@@ -16,7 +16,7 @@
   .page__nav {
     width: min(100%, 26rem);
     border-radius: var(--radius-md);
-    background: rgb(10 7 16 / 0.55);
+    background: rgb(var(--shade-rgb) / 0.55);
   }
 
   .page__links {

@@ -239,7 +239,7 @@ export const ptBR: Dictionary = {
     trailOff: 'Poeira estelar desligada',
     themes: {
       aurora: 'Tema aurora',
-      sunset: 'Tema pôr do sol 🌅',
+      neptune: 'Tema Netuno 🔵',
       terminal: 'Tema terminal 💻',
     },
     greeting: {
@@ -252,10 +252,10 @@ export const ptBR: Dictionary = {
       brasilia: { title: 'Brasília', detail: 'Brasil · UnB e UniCEUB' },
       santander: { title: 'Santander', detail: 'Espanha · onde fui alfabetizada' },
     },
+    touchTurboHint: 'Segure o dedo sobre o meu nome por um instante e veja este planeta disparar.',
     boardTitle: 'Pistas',
     hints: {
-      turbo:
-        'Um código lendário dos videogames dos anos 80 faz este planeta disparar. No celular, talvez o meu nome saiba de algo.',
+      turbo: 'Um código lendário dos videogames dos anos 80 faz este planeta disparar.',
       rain: 'Escreva o nome do que sobe ao espaço com fogo na cauda e veja o que cai do céu.',
       moon: 'Quando o céu fica vazio, escreva o nome da nossa companheira das noites.',
       name: 'Meu nome também é uma senha. Digite-o.',

@@ -81,7 +81,7 @@ describe('temas', () => {
   });
 
   it('valida ids de tema', () => {
-    expect(isThemeId('sunset')).toBe(true);
+    expect(isThemeId('neptune')).toBe(true);
     expect(isThemeId('hacker')).toBe(false);
     expect(isThemeId(undefined)).toBe(false);
   });

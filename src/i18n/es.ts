@@ -241,7 +241,7 @@ export const es: Dictionary = {
     trailOff: 'Polvo estelar desactivado',
     themes: {
       aurora: 'Tema aurora',
-      sunset: 'Tema atardecer 🌅',
+      neptune: 'Tema Neptuno 🔵',
       terminal: 'Tema terminal 💻',
     },
     greeting: {
@@ -255,10 +255,10 @@ export const es: Dictionary = {
       brasilia: { title: 'Brasilia', detail: 'Brasil · UnB y UniCEUB' },
       santander: { title: 'Santander', detail: 'España · donde aprendí a leer y escribir' },
     },
+    touchTurboHint: 'Mantén el dedo sobre mi nombre un instante y mira cómo despega este planeta.',
     boardTitle: 'Pistas',
     hints: {
-      turbo:
-        'Un código legendario de los videojuegos de los 80 hace despegar este planeta. En el móvil, quizá mi nombre sepa algo.',
+      turbo: 'Un código legendario de los videojuegos de los 80 hace despegar este planeta.',
       rain: 'Escribe el nombre de lo que sube al espacio con fuego en la cola y mira qué cae del cielo.',
       moon: 'Cuando el cielo está vacío, escribe el nombre de nuestra compañera de las noches.',
       name: 'Mi nombre también es una contraseña. Escríbelo.',

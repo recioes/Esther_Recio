@@ -4,6 +4,7 @@ import {
   boardEntries,
   EGG_IDS,
   type EggId,
+  hintText,
   parseEggList,
   pickHint,
   reachableEggs,
@@ -140,5 +141,28 @@ describe('boardEntries (o quadro como retrato do progresso)', () => {
     const found = new Set<EggId>(['wish', 'theme']);
     const entries = boardEntries(touch, found, [], { withNewClue: false });
     expect(entries).toEqual(['theme']);
+  });
+});
+
+describe('pista do turbo por aparelho', () => {
+  const copy = {
+    hints: Object.fromEntries(EGG_IDS.map((id) => [id, `pista ${id}`])) as Record<EggId, string>,
+    touchTurboHint: 'segure',
+  };
+
+  it('quem tem teclado vê só a pista do código', () => {
+    expect(hintText('turbo', copy, true)).toBe('pista turbo');
+  });
+
+  it('no toque, a pista descreve o gesto', () => {
+    expect(hintText('turbo', copy, false)).toBe('segure');
+    expect(hintText('theme', copy, false)).toBe('pista theme');
+  });
+
+  it('a pista de teclado não cita celular em nenhum idioma', () => {
+    for (const dict of Object.values(dictionaries)) {
+      expect(dict.easter.hints.turbo, dict.locale).not.toMatch(/celular|phone|móvil/i);
+      expect(dict.easter.touchTurboHint.length, dict.locale).toBeGreaterThan(20);
+    }
   });
 });

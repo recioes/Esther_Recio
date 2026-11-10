@@ -128,7 +128,7 @@
       radial-gradient(ellipse at 6% 4%, rgb(var(--veil-a-rgb) / 0.36), transparent 44%),
       radial-gradient(ellipse at 98% 104%, rgb(var(--veil-b-rgb) / 0.24), transparent 34%),
       radial-gradient(ellipse at 42% 108%, rgb(var(--veil-c-rgb) / 0.2), transparent 46%),
-      radial-gradient(ellipse at 58% -8%, rgb(232 64 159 / 0.14), transparent 42%),
-      linear-gradient(180deg, rgb(10 7 16 / 0.14), rgb(10 7 16 / 0.5));
+      radial-gradient(ellipse at 58% -8%, rgb(var(--veil-d-rgb) / 0.14), transparent 42%),
+      linear-gradient(180deg, rgb(var(--shade-rgb) / 0.14), rgb(var(--shade-rgb) / 0.5));
   }
 }
