@@ -1,4 +1,6 @@
 /** Marca no sumário a seção que está no meio da tela e, no celular, mantém o item visível na barra. */
+const EDGE_TOLERANCE_PX = 4;
+
 export function observeSectionNav(): void {
   const list = document.querySelector<HTMLElement>('[data-section-nav]');
   if (!list || typeof IntersectionObserver === 'undefined') return;
@@ -7,6 +9,16 @@ export function observeSectionNav(): void {
   for (const link of list.querySelectorAll<HTMLAnchorElement>('a')) {
     links.set(link.hash.slice(1), link);
   }
+
+  const nav = list.parentElement;
+  const refreshEdges = (): void => {
+    const end = list.scrollWidth - list.clientWidth;
+    nav?.toggleAttribute('data-more-left', list.scrollLeft > EDGE_TOLERANCE_PX);
+    nav?.toggleAttribute('data-more-right', list.scrollLeft < end - EDGE_TOLERANCE_PX);
+  };
+  refreshEdges();
+  list.addEventListener('scroll', refreshEdges, { passive: true });
+  window.addEventListener('resize', refreshEdges);
 
   const clear = (): void => {
     for (const link of links.values()) link.removeAttribute('aria-current');

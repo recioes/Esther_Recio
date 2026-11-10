@@ -18,21 +18,51 @@
     overflow-x: auto;
     list-style: none;
     scrollbar-width: none;
-    /* Bordas esmaecidas: indicam que a barra rola para o lado. */
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent,
-      #000 1rem,
-      #000 calc(100% - 1.75rem),
-      transparent
-    );
-    mask-image: linear-gradient(
-      90deg,
-      transparent,
-      #000 1rem,
-      #000 calc(100% - 1.75rem),
-      transparent
-    );
+  }
+
+  /* Setas nas pontas: mostram para que lado ainda dá para arrastar a barra (ver section-nav.ts). */
+  .section-nav::before,
+  .section-nav::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    color: var(--color-signal-300);
+    font-size: 1.5rem;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .section-nav::before {
+    content: "‹";
+    left: 0;
+    background: linear-gradient(90deg, rgb(var(--shade-rgb)) 45%, transparent);
+  }
+
+  .section-nav::after {
+    content: "›";
+    right: 0;
+    background: linear-gradient(270deg, rgb(var(--shade-rgb)) 45%, transparent);
+  }
+
+  .section-nav[data-more-left]::before,
+  .section-nav[data-more-right]::after {
+    opacity: 1;
+  }
+
+  .section-nav[data-more-right]::after {
+    animation: section-nav-nudge 0.9s ease-in-out 8 alternate;
+  }
+
+  @keyframes section-nav-nudge {
+    to {
+      transform: translateX(-5px);
+    }
   }
 
   .section-nav__link {
@@ -78,14 +108,17 @@
       border: 0;
     }
 
+    .section-nav::before,
+    .section-nav::after {
+      display: none;
+    }
+
     .section-nav__list {
       position: absolute;
       right: var(--space-6);
       flex-direction: column;
       padding: 0;
       overflow: visible;
-      -webkit-mask-image: none;
-      mask-image: none;
       transform: translateY(-50%);
     }
 
