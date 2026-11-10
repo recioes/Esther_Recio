@@ -68,11 +68,11 @@ const STYLE = `
   * { box-sizing: border-box; }
   body { margin: 0; color: #1a1a1f; font: 9.3pt/1.35 Calibri, "Segoe UI", Arial, sans-serif; }
   h1 { margin: 0; font-size: 21pt; letter-spacing: -0.01em; line-height: 1.1; }
-  .headline { margin: 1px 0 0; color: #5b3ea8; font-size: 10.5pt; font-weight: 600; }
+  .headline { margin: 1px 0 0; color: #a81e4a; font-size: 10.5pt; font-weight: 600; }
   .contact { margin: 3px 0 0; color: #3a3a44; font-size: 9.2pt; }
   .contact a { color: inherit; text-decoration: none; }
   .contact span + span::before { content: "  |  "; color: #9a9aa5; }
-  h2 { margin: 10px 0 3px; padding-bottom: 1px; border-bottom: 1px solid #5b3ea8; color: #5b3ea8;
+  h2 { margin: 10px 0 3px; padding-bottom: 1px; border-bottom: 1px solid #a81e4a; color: #a81e4a;
        font-size: 9.6pt; letter-spacing: 0.07em; text-transform: uppercase; }
   p, ul { margin: 0; }
   .summary { margin-top: 2px; }
@@ -84,7 +84,7 @@ const STYLE = `
   .role__title { font-weight: 700; font-size: 10.4pt; }
   .role__org { font-weight: 600; color: #3a3a44; }
   .role__period { color: #3a3a44; white-space: nowrap; font-size: 9.2pt; }
-  .role__highlight { color: #5b3ea8; font-style: italic; font-size: 9.2pt; }
+  .role__highlight { color: #a81e4a; font-style: italic; font-size: 9.2pt; }
   ul { padding-left: 13px; }
   li { margin-top: 0.8px; padding-left: 1px; }
   .edu { display: flex; justify-content: space-between; gap: 8px; margin-top: 2px; }

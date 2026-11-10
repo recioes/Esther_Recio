@@ -3,14 +3,37 @@ import { CV, CV_CONTACT } from '../../src/data/cv';
 import { PROJECTS } from '../../src/data/projects';
 import { dictionaries } from '../../src/i18n';
 
+const LIVE_HOSTS = ['recio.trd.br'];
+
 describe('projetos em destaque', () => {
-  it('apontam para repositórios públicos do GitHub da Esther, em https', () => {
+  it('repositórios apontam para o GitHub da Esther, e sites para hosts permitidos, em https', () => {
     for (const project of PROJECTS) {
       const url = new URL(project.href);
       expect(url.protocol).toBe('https:');
-      expect(url.hostname).toBe('github.com');
-      expect(url.pathname.startsWith('/recioes/')).toBe(true);
       expect(project.tags.length).toBeGreaterThan(0);
+      if (project.kind === 'repository') {
+        expect(url.hostname).toBe('github.com');
+        expect(url.pathname.startsWith('/recioes/')).toBe(true);
+      } else {
+        expect(LIVE_HOSTS).toContain(url.hostname);
+      }
+    }
+  });
+
+  it('nunca linkam o repositório privado do site publicado', () => {
+    for (const project of PROJECTS) {
+      expect(project.href).not.toContain('jessica-recio-site-moderno');
+    }
+  });
+
+  it('o projeto em destaque tem aprendizados, CTA e orquestração nos três idiomas', () => {
+    for (const project of PROJECTS.filter((entry) => entry.featured)) {
+      expect(project.tools?.length).toBeGreaterThan(0);
+      for (const dict of Object.values(dictionaries)) {
+        const item = dict.projects.items[project.id];
+        expect(item.learnings?.length, dict.locale).toBeGreaterThan(0);
+        expect(item.ctaLabel?.length, dict.locale).toBeGreaterThan(0);
+      }
     }
   });
 

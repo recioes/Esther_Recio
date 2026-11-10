@@ -77,5 +77,5 @@ export function mountConstellation(onComplete: (centerX: number, centerY: number
     }, COMPLETE_MS);
   }
 
-  document.body.append(root);
+  (document.querySelector('.hero, .lost') ?? document.body).append(root);
 }

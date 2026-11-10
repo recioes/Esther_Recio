@@ -1,8 +1,9 @@
 ---
 import '../styles/components/timeline.css';
-import { TIMELINE } from '../data/timeline';
+import { TECH_ICONS, TIMELINE } from '../data/timeline';
 import type { Dictionary } from '../i18n/types';
 import { formatPeriod } from '../lib/period';
+import SpaceIcon from './SpaceIcon.astro';
 
 interface Props {
   readonly dict: Dictionary;
@@ -23,18 +24,24 @@ const copy = dict.timeline;
   </header>
   <ol class="timeline__list">
     {
-      TIMELINE.map((entry) => {
+      TIMELINE.map((entry, index) => {
         const item = copy.items[entry.id];
         return (
           <li
             class="timeline__item"
             data-kind={entry.kind}
+            data-tone={index % 4}
             data-current={entry.current ? '' : undefined}
             data-timeline-item
             data-no-drag
           >
-            <span class="timeline__dot" aria-hidden="true" />
-            <article class="timeline__card">
+            <span class="timeline__dot" aria-hidden="true">
+              <SpaceIcon name={entry.icon} />
+            </span>
+            <article class="timeline__card" data-spotlight>
+              <span class="timeline__stage" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
               <p class="timeline__period">
                 <span class="sr-only">{copy.kindLabels[entry.kind]}: </span>
                 {formatPeriod(entry.start, entry.end, dict.htmlLang, copy.present)}
@@ -56,9 +63,15 @@ const copy = dict.timeline;
               {
                 entry.tags && (
                   <ul class="timeline__tags">
-                    {entry.tags.map((tag) => (
-                      <li>{tag}</li>
-                    ))}
+                    {entry.tags.map((tag) => {
+                      const icon = TECH_ICONS[tag];
+                      return (
+                        <li>
+                          {icon && <SpaceIcon name={icon} />}
+                          {tag}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )
               }

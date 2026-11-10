@@ -1,9 +1,23 @@
 ---
 import '../styles/components/earth.css';
 import { joinBase } from '../lib/base-path';
+import Orbit from './Orbit.astro';
 
 const base = import.meta.env.BASE_URL;
 const poster = joinBase(base, 'media/earth-poster.webp');
+
+// A metade de trás fica antes do canvas do globo e a da frente depois: é o que dá a profundidade.
+const ORBIT_ARC = {
+  back: 'M -560 0 A 560 150 0 0 1 560 0',
+  front: 'M -560 0 A 560 150 0 0 0 560 0',
+};
+const orbitSvg = (side: 'back' | 'front') => ({
+  class: `earth__orbit earth__orbit--${side}`,
+  arc: ORBIT_ARC[side],
+  side,
+});
+const [orbitBack, orbitFront] = [orbitSvg('back'), orbitSvg('front')];
+const orbits = { back: orbitBack, front: orbitFront };
 ---
 
 <!--
@@ -11,9 +25,12 @@ const poster = joinBase(base, 'media/earth-poster.webp');
   globo 3D em [data-globe-root] e o poster some. Decorativo: fora da árvore de acessibilidade.
 -->
 <div class="earth" aria-hidden="true">
+  <Orbit {...orbits.back} />
   <div class="earth__stage">
     <img class="earth__poster" src={poster} alt="" width="1024" height="1024" decoding="async" />
   </div>
   <div class="earth__canvas" data-globe-root></div>
   <div class="earth__veil"></div>
+  <Orbit {...orbits.front} />
+  <canvas class="cosmos cosmos--hole" data-cosmos="blackhole"></canvas>
 </div>

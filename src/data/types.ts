@@ -33,8 +33,29 @@ export type TimelineKind = 'work' | 'education';
 /** Mês no formato AAAA-MM. Os períodos são formatados por idioma em `lib/period.ts`. */
 export type YearMonth = `${number}-${number}`;
 
+export type SpaceIconName =
+  | 'dish'
+  | 'shield'
+  | 'telescope'
+  | 'cargo'
+  | 'relay'
+  | 'habitat'
+  | 'beacon'
+  | 'comet'
+  | 'waves'
+  | 'observatory'
+  | 'language'
+  | 'data'
+  | 'stream'
+  | 'cloud'
+  | 'radar'
+  | 'probe'
+  | 'pipeline'
+  | 'window';
+
 export interface TimelineEntry {
   readonly id: TimelineId;
+  readonly icon: SpaceIconName;
   readonly kind: TimelineKind;
   readonly start: YearMonth;
   /** Ausente = em andamento (ou pontual, quando não há `current`). */
@@ -43,13 +64,18 @@ export interface TimelineEntry {
   readonly tags?: readonly string[];
 }
 
-export type ProjectId = 'ihaircare';
+export type ProjectId = 'jessicaRecio' | 'ihaircare';
 
 export interface ProjectEntry {
   readonly id: ProjectId;
-  /** Repositório público no GitHub (o host é conferido nos testes). */
+  /** `repository`: repositório público no GitHub. `live`: site publicado (repositório privado). */
+  readonly kind: 'repository' | 'live';
+  /** O host é conferido nos testes, conforme o `kind`. */
   readonly href: HttpsUrl;
   readonly tags: readonly string[];
+  /** Agentes e modelos usados na construção. */
+  readonly tools?: readonly string[];
+  readonly featured?: boolean;
 }
 
 export type LanguageId = 'pt' | 'es' | 'en';

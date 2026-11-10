@@ -15,8 +15,8 @@ import { GLOBE_MARKERS, isFacingCamera, type MarkerId } from '../lib/markers';
 /** Logo acima da camada de nuvens (1.008) para o ponto não ser apagado por elas. */
 const SURFACE_RADIUS = 1.012;
 const PULSE_PERIOD_MS = 2200;
-const DOT_COLOR = 0xffd6ee;
-const RING_COLOR = 0xf9a8d4;
+const DOT_COLOR = 0xfff0e4;
+const RING_COLOR = 0xffb68f;
 const FORWARD = new Vector3(0, 0, 1);
 
 export interface ScreenMarker {

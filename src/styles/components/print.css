@@ -10,8 +10,8 @@
       --color-border: #c9c9d1;
       --color-text: #16161d;
       --color-text-muted: #3d3d48;
-      --color-pink-300: #5b3ea8;
-      --color-lilac: #5b3ea8;
+      --color-signal-300: #a81e4a;
+      --color-starlight: #a81e4a;
       --gradient-title: none;
       color-scheme: light;
     }
@@ -62,7 +62,7 @@
 
     .hero__role {
       background: none;
-      color: #5b3ea8;
+      color: #a81e4a;
     }
 
     .section__header,
@@ -90,6 +90,19 @@
       padding-left: 0;
     }
 
+    .section-nav,
+    .timeline__route {
+      display: none;
+    }
+
+    [data-motion] {
+      opacity: 1 !important;
+      transform: none !important;
+      clip-path: none !important;
+    }
+
+    .timeline-ready .timeline__item:not(.is-lit) .bullets li,
+    .timeline-ready .timeline__item:not(.is-lit) .timeline__tags li,
     .timeline-ready .timeline__item:not(.is-lit) .timeline__card {
       opacity: 1;
       transform: none;
@@ -108,7 +121,7 @@
     .link-card::after,
     .project::after {
       content: attr(href);
-      color: #5b3ea8;
+      color: #a81e4a;
       font-size: 9pt;
       overflow-wrap: anywhere;
     }

@@ -5,8 +5,10 @@ Personal page with my professional profiles (LinkedIn, GitHub and Lattes), my ca
 ## Stack
 
 - **Astro** (static HTML, 0 KB of framework JS) + strict **TypeScript**
-- **Native CSS** with tokens and `@layer` (no Tailwind, no animation libraries)
-- **Inter** variable font, self-hosted
+- **Native CSS** with tokens and `@layer` (no Tailwind)
+- Nebula palette (hydrogen red, rose, magenta, ember, oxygen teal) defined only in `src/styles/tokens.css`
+- **Bricolage Grotesque**, **Geist** and **Geist Mono** variable fonts, self-hosted
+- **GSAP** (ScrollTrigger) and **Lenis** for motion, loaded after first paint
 - Vitest (tests), Biome (lint and formatting), GitHub Actions (CI and deploy)
 
 Decisions and reasoning are in [`docs/adr/0001-modernizacao-pagina-links.md`](docs/adr/0001-modernizacao-pagina-links.md) (Portuguese, translated when next touched).
@@ -87,7 +89,7 @@ The first card on the page downloads a one-page A4 résumé in the language of t
 
 ## Projects, sitemap and printing
 
-- **Projects** (`src/data/projects.ts`): one featured public repository, iHairCare Backend API. Copy follows its README; private repositories are never linked. To feature more, add an entry there and its text under `projects.items` in each dictionary.
+- **Projects** (`src/data/projects.ts`): a featured live site (`kind: 'live'`, built with AI agent orchestration) and the public iHairCare Backend API repository (`kind: 'repository'`). Private repositories are never linked. To feature more, add an entry there and its text under `projects.items` in each dictionary.
 - **Sitemap:** `src/pages/sitemap.xml.ts` emits `/sitemap.xml` with the three languages tied together by `hreflang`; each page also links its language's PDF with `rel="alternate"`. There is no `robots.txt` because GitHub Pages only honors it at the domain root, which a project site does not control. Submit the sitemap URL in Google Search Console if you want faster indexing.
 - **Printing:** `src/styles/components/print.css` makes "Save as PDF" on the site itself readable (white background, no globe or effects, links spelled out).
 - **No analytics on purpose:** counting visits or PDF downloads needs a third-party service, which the CSP (`script-src 'self'`, `img-src 'self'`, `connect-src 'none'`) and the post-build checks forbid. GitHub Pages has no built-in visit counter (the repository's Insights → Traffic only counts views of the repository on github.com, not of the site). If you ever want one, a cookieless service such as GoatCounter would need a CSP exception and an account.
