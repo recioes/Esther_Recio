@@ -52,8 +52,11 @@ describe('projetos em destaque', () => {
 
   it('o currículo cita os mesmos projetos', () => {
     for (const cv of Object.values(CV)) {
-      expect(cv.projects).toContain('iHairCare');
-      expect(cv.projects).toContain('github.com/recioes/ihaircare.backend.app');
+      expect(cv.projects.map((project) => project.name)).toContain('iHairCare Backend API');
+      expect(cv.projects.map((project) => project.href)).toEqual([
+        'https://github.com/recioes/ihaircare.backend.app',
+        'https://recio.trd.br',
+      ]);
     }
   });
 });
