@@ -117,7 +117,7 @@ Everything is decorative, costs nothing to visitors who do not look for it, and 
 | Type `esther` | The name glows |
 | Type `estrela` / `estrella` / `star` / `shootingstar` / `wish` / `desejo` / `deseo` | A clickable shooting star (make a wish); it also shows up on its own in 1 of 20 visits |
 | Click the "ER" monogram 5 times | Theme change: aurora → neptune → terminal |
-| Hidden constellation (top-left corner) | Connect the 5 stars in the right order to draw a five-pointed star |
+| Hidden constellation (beside the hero) | Connect the 5 stars in the right order to draw a five-pointed star |
 | Move the mouse | Stardust trail; the `S` key (after 1 s without typing) toggles it |
 | Open the browser console | A note with the LinkedIn link |
 | Finding an egg for the first time | The bottom-right board ("✦ n/9") opens by itself with a new riddle-style clue for another, still-hidden egg, then folds away. Clues pile up there, one per first discovery, and click on the counter reopens them; found eggs get a check, including eggs found out of order before their clue showed up. Finding an egg again adds nothing. State lasts for the tab session; touch devices only get clues for eggs they can reach |
