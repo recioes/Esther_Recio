@@ -19,6 +19,11 @@ const ORBIT_RY = 150;
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const ROUTE_AMPLITUDE = 30;
+/** Abaixo desta largura a calha é estreita: a curva menor não encosta na borda da tela. */
+const NARROW_LIST_PX = 440;
+const NARROW_ROUTE_AMPLITUDE = 14;
+/** Altura da tela em que a nave fica enquanto a seção rola. */
+const SHIP_SCREEN_POSITION = 'center 60%';
 /** Nave apontando para cima, centrada na origem. */
 const SHIP_PARTS: readonly (readonly [string, string])[] = [
   ['timeline__ship-flame', 'M-3 9 L0 17 L3 9 Z'],
@@ -257,6 +262,10 @@ function createRouteSvg(list: HTMLElement): {
 function drawTimeline(): void {
   const list = document.querySelector<HTMLElement>('.timeline__list');
   if (!list) return;
+  const dots = gsap.utils.toArray<HTMLElement>('.timeline__dot', list);
+  const firstDot = dots[0];
+  const lastDot = dots.at(-1);
+  if (!firstDot || !lastDot) return;
   const { track, flight, ship } = createRouteSvg(list);
   const progress = { value: 0 };
 
@@ -265,21 +274,24 @@ function drawTimeline(): void {
     const length = track.getTotalLength();
     const at = length * progress.value;
     const point = track.getPointAtLength(at);
+    // Dois pontos em volta da nave: nas pontas da rota, um só repetiria a posição e zeraria o ângulo.
+    const behind = track.getPointAtLength(Math.max(at - 1, 0));
     const ahead = track.getPointAtLength(Math.min(at + 1, length));
-    const angle = (Math.atan2(ahead.y - point.y, ahead.x - point.x) * 180) / Math.PI + 90;
+    const angle = (Math.atan2(ahead.y - behind.y, ahead.x - behind.x) * 180) / Math.PI + 90;
     ship.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
   };
 
   const layout = (): void => {
     const origin = list.getBoundingClientRect();
-    const stations = [...list.querySelectorAll('.timeline__dot')].map((dot) => {
+    const stations = dots.map((dot) => {
       const rect = dot.getBoundingClientRect();
       return {
         x: rect.left + rect.width / 2 - origin.left,
         y: rect.top + rect.height / 2 - origin.top,
       };
     });
-    const d = buildRoutePath(stations, ROUTE_AMPLITUDE);
+    const amplitude = list.clientWidth < NARROW_LIST_PX ? NARROW_ROUTE_AMPLITUDE : ROUTE_AMPLITUDE;
+    const d = buildRoutePath(stations, amplitude);
     track.setAttribute('d', d);
     flight.setAttribute('d', d);
     apply();
@@ -291,7 +303,14 @@ function drawTimeline(): void {
     value: 1,
     ease: 'none',
     onUpdate: apply,
-    scrollTrigger: { trigger: list, start: 'top 70%', end: 'bottom 70%', scrub: 0.4 },
+    // O percurso vai da primeira à última estação: medir a lista inteira deixaria a nave para trás.
+    scrollTrigger: {
+      trigger: firstDot,
+      start: SHIP_SCREEN_POSITION,
+      endTrigger: lastDot,
+      end: SHIP_SCREEN_POSITION,
+      scrub: 0.4,
+    },
   });
 }
 

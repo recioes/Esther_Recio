@@ -54,7 +54,7 @@ export interface CvContent {
   readonly languages: string;
   readonly academic: readonly string[];
   /** Projetos pessoais públicos no GitHub, numa linha só. */
-  readonly projects: string;
+  readonly projects: readonly CvProject[];
   /** Só no currículo em espanhol (nacionalidade e vivência na Espanha). */
   readonly additional?: readonly string[];
 }
@@ -63,6 +63,13 @@ export interface CvContactItem {
   readonly label: string;
   /** Sem destino = texto simples (ex.: cidade). */
   readonly href?: string;
+}
+
+export interface CvProject {
+  readonly name: string;
+  readonly detail: string;
+  readonly href: string;
+  readonly label: string;
 }
 
 export const CV_CONTACT: {
@@ -96,7 +103,7 @@ export const CV: Readonly<Record<CvLocale, CvContent>> = {
       languages: 'Idiomas',
       academic: 'Atividades acadêmicas',
       additional: 'Informações adicionais',
-      projects: 'Projeto no GitHub',
+      projects: 'Projetos',
     },
     summary:
       'Desenvolvedora backend na Zenvia, construindo serviços de alto volume em C# e .NET (APIs, workers, microsserviços e mensageria). Vim do estágio direto para Dev Júnior. Formada em Administração e em Análise e Desenvolvimento de Sistemas: junto visão de negócio e engenharia, com foco em confiabilidade, observabilidade e segurança.',
@@ -180,8 +187,21 @@ export const CV: Readonly<Record<CvLocale, CvContent>> = {
       'Autora principal do artigo “Evolução da Pesquisa em GSCM: uma Revisão Bibliométrica no Período de 2018 a 2020”, apresentado no GOOP (2021).',
       'Monitora voluntária de Teoria Política Moderna (UnB, 2020); comissão organizadora da Semana Acadêmica de Administração 2021.',
     ],
-    projects:
-      'iHairCare Backend API (C#, ASP.NET Core, MongoDB, arquitetura limpa em camadas, SOLID, Swagger): github.com/recioes/ihaircare.backend.app.',
+    projects: [
+      {
+        name: 'iHairCare Backend API',
+        detail: 'C#, ASP.NET Core, MongoDB, arquitetura limpa em camadas, SOLID e Swagger.',
+        href: 'https://github.com/recioes/ihaircare.backend.app',
+        label: 'github.com/recioes/ihaircare.backend.app',
+      },
+      {
+        name: 'Site de tradutora pública',
+        detail:
+          'Site trilíngue construído com orquestração de agentes de IA (OmO, Claude, GPT, DeepSeek), SvelteKit e TypeScript.',
+        href: 'https://recio.trd.br',
+        label: 'recio.trd.br',
+      },
+    ],
   },
 
   en: {
@@ -196,7 +216,7 @@ export const CV: Readonly<Record<CvLocale, CvContent>> = {
       languages: 'Languages',
       academic: 'Academic activities',
       additional: 'Additional information',
-      projects: 'GitHub project',
+      projects: 'Projects',
     },
     summary:
       'Backend developer at Zenvia, building high-volume services in C# and .NET (APIs, workers, microservices and messaging). Moved from internship straight to Junior Dev. Degrees in Business Administration and in Systems Analysis and Development: I combine business perspective with engineering, with a focus on reliability, observability and security.',
@@ -280,8 +300,21 @@ export const CV: Readonly<Record<CvLocale, CvContent>> = {
       'Lead author of “Evolution of GSCM Research: A Bibliometric Review for 2018 to 2020” (in Portuguese), presented at GOOP (2021).',
       'Volunteer teaching assistant, Modern Political Theory (UnB, 2020); organizing committee, Business Administration Academic Week 2021.',
     ],
-    projects:
-      'iHairCare Backend API (C#, ASP.NET Core, MongoDB, clean layered architecture, SOLID, Swagger): github.com/recioes/ihaircare.backend.app.',
+    projects: [
+      {
+        name: 'iHairCare Backend API',
+        detail: 'C#, ASP.NET Core, MongoDB, clean layered architecture, SOLID and Swagger.',
+        href: 'https://github.com/recioes/ihaircare.backend.app',
+        label: 'github.com/recioes/ihaircare.backend.app',
+      },
+      {
+        name: 'Sworn translator website',
+        detail:
+          'Trilingual website built by orchestrating AI agents (OmO, Claude, GPT, DeepSeek), SvelteKit and TypeScript.',
+        href: 'https://recio.trd.br',
+        label: 'recio.trd.br',
+      },
+    ],
   },
 
   es: {
@@ -296,7 +329,7 @@ export const CV: Readonly<Record<CvLocale, CvContent>> = {
       languages: 'Idiomas',
       academic: 'Actividades académicas',
       additional: 'Información adicional',
-      projects: 'Proyecto en GitHub',
+      projects: 'Proyectos',
     },
     summary:
       'Desarrolladora backend en Zenvia, construyendo servicios de alto volumen en C# y .NET (APIs, workers, microservicios y mensajería). Pasé de las prácticas directamente a Dev Junior. Graduada en Administración y en Análisis y Desarrollo de Sistemas: combino visión de negocio e ingeniería, con foco en fiabilidad, observabilidad y seguridad.',
@@ -380,8 +413,21 @@ export const CV: Readonly<Record<CvLocale, CvContent>> = {
       'Autora principal del artículo «Evolución de la investigación en GSCM: una revisión bibliométrica de 2018 a 2020» (en portugués), presentado en el GOOP (2021).',
       'Monitora voluntaria de Teoría Política Moderna (UnB, 2020); comisión organizadora de la Semana Académica de Administración 2021.',
     ],
-    projects:
-      'iHairCare Backend API (C#, ASP.NET Core, MongoDB, arquitectura limpia en capas, SOLID, Swagger): github.com/recioes/ihaircare.backend.app.',
+    projects: [
+      {
+        name: 'iHairCare Backend API',
+        detail: 'C#, ASP.NET Core, MongoDB, arquitectura limpia, SOLID y Swagger.',
+        href: 'https://github.com/recioes/ihaircare.backend.app',
+        label: 'github.com/recioes/ihaircare.backend.app',
+      },
+      {
+        name: 'Web de traductora jurada',
+        detail:
+          'Orquestación de agentes de IA (OmO, Claude, GPT, DeepSeek), SvelteKit y TypeScript.',
+        href: 'https://recio.trd.br',
+        label: 'recio.trd.br',
+      },
+    ],
     additional: [
       'Doble nacionalidad (brasileña y española).',
       'Seis años viviendo en España; estudié en el Colegio Calasanz de Villacarriedo.',

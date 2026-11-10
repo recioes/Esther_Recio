@@ -239,7 +239,7 @@ export const en: Dictionary = {
     trailOff: 'Stardust off',
     themes: {
       aurora: 'Aurora theme',
-      sunset: 'Sunset theme 🌅',
+      neptune: 'Neptune theme 🔵',
       terminal: 'Terminal theme 💻',
     },
     greeting: {
@@ -252,10 +252,10 @@ export const en: Dictionary = {
       brasilia: { title: 'Brasília', detail: 'Brazil · UnB and UniCEUB' },
       santander: { title: 'Santander', detail: 'Spain · where I learned to read and write' },
     },
+    touchTurboHint: 'Hold your finger on my name for a moment and watch this planet take off.',
     boardTitle: 'Clues',
     hints: {
-      turbo:
-        'A legendary 80s video-game code makes this planet take off. On a phone, maybe my name knows something.',
+      turbo: 'A legendary 80s video-game code makes this planet take off.',
       rain: 'Type the name of what climbs to space with fire in its tail, and watch what falls from the sky.',
       moon: 'When the sky is empty, type the name of our companion of the night.',
       name: 'My name is also a password. Type it.',

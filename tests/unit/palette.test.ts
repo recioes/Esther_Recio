@@ -42,6 +42,23 @@ describe('paleta', () => {
   });
 });
 
+describe('tema Netuno', () => {
+  const block = tokens.slice(tokens.indexOf('data-theme="neptune"'));
+  const hex = (name: string): string => {
+    const match = block.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`));
+    if (!match?.[1]) throw new Error(`token ausente: ${name}`);
+    return match[1];
+  };
+
+  it.each(['color-text', 'color-text-muted', 'color-signal-300'])('%s passa no AA', (name) => {
+    expect(contrast(hex(name), hex('color-bg'))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('texto branco passa no AA sobre o botão', () => {
+    expect(contrast('#ffffff', hex('color-accent-700'))).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
 describe('rota da trajetória', () => {
   const points = [
     { x: 10, y: 0 },

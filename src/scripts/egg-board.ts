@@ -1,5 +1,5 @@
 import type { EasterCopy } from '../i18n/types';
-import type { EggId } from '../lib/hints';
+import { type EggId, hintText } from '../lib/hints';
 
 /**
  * Depois de uma pista nova o quadro abre sozinho e se recolhe; abrir ou fechar à mão cancela isso.
@@ -29,7 +29,11 @@ export interface EggBoard {
  * Quadro no canto inferior direito: contador "✦ n/total" que, ao clicar, mostra as pistas
  * acumuladas (uma por segredo descoberto). Só aparece depois do primeiro segredo achado.
  */
-export function createEggBoard(copy: EasterCopy, isToastVisible: () => boolean): EggBoard {
+export function createEggBoard(
+  copy: EasterCopy,
+  isToastVisible: () => boolean,
+  canType: boolean,
+): EggBoard {
   const root = document.createElement('section');
   root.className = 'egg-board';
   root.setAttribute('aria-label', copy.boardTitle);
@@ -92,7 +96,7 @@ export function createEggBoard(copy: EasterCopy, isToastVisible: () => boolean):
         const done = found.has(egg);
         item.dataset.done = String(done);
         if (fresh && index === clues.length - 1) item.classList.add('is-new');
-        item.textContent = copy.hints[egg];
+        item.textContent = hintText(egg, copy, canType);
         return item;
       });
       list.replaceChildren(...items);

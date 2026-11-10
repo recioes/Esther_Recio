@@ -262,7 +262,8 @@
   /* Com JS, as etapas começam apagadas e acendem ao entrar na tela (ver timeline-reveal.ts). */
   .timeline-ready .timeline__item:not(.is-lit) .timeline__card {
     opacity: 0.2;
-    transform: translateX(28px) scale(0.97);
+    /* Só na vertical: um deslocamento lateral alargaria a página no celular. */
+    transform: translateY(24px) scale(0.97);
   }
 
   .timeline-ready .timeline__item:not(.is-lit) .timeline__card::after {
@@ -401,6 +402,15 @@
 
     .timeline__card:hover::before {
       opacity: 1;
+    }
+  }
+
+  /* No celular o globo fica atrás dos cards: escurece o que passa por baixo do texto. */
+  @media (max-width: 999px) {
+    .timeline__card,
+    .panel {
+      -webkit-backdrop-filter: blur(24px) brightness(0.5);
+      backdrop-filter: blur(24px) brightness(0.5);
     }
   }
 

@@ -71,6 +71,7 @@ const STYLE = `
   .headline { margin: 1px 0 0; color: #a81e4a; font-size: 10.5pt; font-weight: 600; }
   .contact { margin: 3px 0 0; color: #3a3a44; font-size: 9.2pt; }
   .contact a { color: inherit; text-decoration: none; }
+  .project-link { color: #a81e4a; text-decoration: underline; }
   .contact span + span::before { content: "  |  "; color: #9a9aa5; }
   h2 { margin: 10px 0 3px; padding-bottom: 1px; border-bottom: 1px solid #a81e4a; color: #a81e4a;
        font-size: 9.6pt; letter-spacing: 0.07em; text-transform: uppercase; }
@@ -166,7 +167,12 @@ function renderHtml(cv) {
   <ul>${cv.academic.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
 
   <h2>${escapeHtml(headings.projects)}</h2>
-  <p>${escapeHtml(cv.projects)}</p>
+  <ul>${cv.projects
+    .map(
+      (project) =>
+        `<li><b>${escapeHtml(project.name)}:</b> ${escapeHtml(project.detail)} <a class="project-link" href="${project.href}">${escapeHtml(project.label)}</a></li>`,
+    )
+    .join('')}</ul>
   ${additional}
 </body>
 </html>`;

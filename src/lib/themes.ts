@@ -1,10 +1,10 @@
-export const THEMES = ['aurora', 'sunset', 'terminal'] as const;
+export const THEMES = ['aurora', 'neptune', 'terminal'] as const;
 export type ThemeId = (typeof THEMES)[number];
 
 /** Cores do globo para cada tema (atmosfera e crepúsculo). */
 export const THEME_GLOBE: Readonly<Record<ThemeId, { glow: number; twilight: number }>> = {
   aurora: { glow: 0x56c7d9, twilight: 0xff9a66 },
-  sunset: { glow: 0xf97316, twilight: 0xfb7185 },
+  neptune: { glow: 0x4cc9ff, twilight: 0x7c9cff },
   terminal: { glow: 0x22c55e, twilight: 0x4ade80 },
 };
 

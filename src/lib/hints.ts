@@ -70,3 +70,12 @@ export function parseEggList(raw: string | null): EggId[] {
 export function serializeEggs(eggs: Iterable<EggId>): string {
   return [...eggs].join(',');
 }
+
+/** A pista precisa descrever o que este aparelho consegue fazer. */
+export function hintText(
+  egg: EggId,
+  copy: { readonly hints: Readonly<Record<EggId, string>>; readonly touchTurboHint: string },
+  canType: boolean,
+): string {
+  return egg === 'turbo' && !canType ? copy.touchTurboHint : copy.hints[egg];
+}

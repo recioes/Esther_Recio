@@ -12,7 +12,7 @@
     min-height: 100dvh;
     padding: var(--space-8) var(--space-4);
     text-align: left;
-    text-shadow: 0 1px 14px rgb(10 7 16 / 0.9);
+    text-shadow: 0 1px 14px rgb(var(--shade-rgb) / 0.9);
   }
 
   .lost .constellation {

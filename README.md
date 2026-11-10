@@ -116,7 +116,7 @@ Everything is decorative, costs nothing to visitors who do not look for it, and 
 | Type `lua` / `moon` / `luna` | The moon appears for 12 s (typing again restarts the timer) |
 | Type `esther` | The name glows |
 | Type `estrela` / `estrella` / `star` / `shootingstar` / `wish` / `desejo` / `deseo` | A clickable shooting star (make a wish); it also shows up on its own in 1 of 20 visits |
-| Click the "ER" monogram 5 times | Theme change: aurora → sunset → terminal |
+| Click the "ER" monogram 5 times | Theme change: aurora → neptune → terminal |
 | Hidden constellation (top-left corner) | Connect the 5 stars in the right order to draw a five-pointed star |
 | Move the mouse | Stardust trail; the `S` key (after 1 s without typing) toggles it |
 | Open the browser console | A note with the LinkedIn link |

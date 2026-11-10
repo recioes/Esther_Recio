@@ -139,6 +139,8 @@ export interface EasterCopy {
   readonly boardTitle: string;
   /** Uma pista (charada, sem dar a resposta) por segredo. */
   readonly hints: Readonly<Record<EggId, string>>;
+  /** Sem teclado não há código konami: no toque, o turbo se ativa segurando o nome. */
+  readonly touchTurboHint: string;
   /** Rótulo (leitores de tela) do contador de segredos achados, ex.: "Segredos descobertos". */
   readonly counterLabel: string;
   /** Quando todos os segredos alcançáveis foram achados. */
